@@ -1,0 +1,192 @@
+export default {
+  id: "your-opportunities",
+  stage: "∞",
+  order: 2,
+  title: "Your Opportunities: Research, Building, Investing & Writing",
+  difficulty: "infinity",
+  prereqs: ["career-paths", "austrian-investing"],
+
+  oneLiner:
+    "Stage 14.5 showed where the doors of academia are; Stage ∞.1 showed where the school's construction sites are. This lesson answers a more personal question: what can **you** — someone who has finished this course, holds a job, has some time and perhaps some money — actually do with this way of thinking? There are four lanes: research, building, investing, and writing and teaching. Each has real entry points and **honest odds**. This lesson sells no dream. It gives you, for each lane, the entrance, the entry cost, the common ways to die, and a “first 90 days” plan.",
+
+  intuition: `
+Start with a common ending, because it is so common.
+
+Someone finishes learning Austrian economics and is on fire for three months. He can see what the central bank is doing, he sees through every “stimulus” in the news, he can take Keynes apart at dinner. Then he does one of three things: (1) argues on social media and becomes an “Austrian account”; (2) moves his savings into gold or Bitcoin and waits for “the crash”; (3) does nothing, and three years later remembers only that “inflation is caused by printing money.” **All three endings are a waste** — not because he learned the wrong thing, but because he never **connected what he learned to a real output.**
+
+Austrian economics is a theory of **action.** The most ironic way for it to fail is for the people who learn it not to act. So the question of this lesson is not “are the Austrians right?” but “what is your next step?”
+
+Four lanes. One sentence each on what it is and what it is not:
+
+- **Research**: contribute one brick to the school's open problems (Stage ∞.1). It is not restating Mises; it is answering a question that had no answer yesterday. Highest entry cost, and the honest odds are low — but it is the only lane that moves the school forward.
+- **Building**: make a product in which Austrian insight is **embodied**, not printed in the product description. Prediction markets, tools that widen entrepreneurial alertness, self-custody, choice of algorithm, AI that augments judgment — each is an Austrian proposition made physical. The entry cost is that you must be able to make things; the odds are the odds of any startup.
+- **Investing**: apply the framework of Stage 10.5 to your own money — the **framework**, not forecasts. This is the easiest lane to enter and the easiest to die in, by becoming a permabear (Stage 14.4). Nothing here is investment advice.
+- **Writing and teaching**: explain this course to the next person. In plain language (Stage 14.2), on Substack, YouTube or a podcast (Stage 16.3), or in translation — Chinese-language Austrian material is still thin, and that is a real opportunity one can state modestly. Lowest entry cost, longest compounding.
+
+One principle comes before the four lanes: **look at Austrian opportunities the Austrian way.** Kirzner says entrepreneurial profit comes from alertness — noticing a mispricing others have not (Stage 6.1). So ask: in the small market called “Austrian economics,” what is overvalued and what is undervalued? My judgment: **criticizing the mainstream** is badly overvalued (the supply is enormous); **empirical checking, usable tools, and good explanation in Chinese** are badly undervalued (the supply is tiny). That is your mispricing. The entry point of every lane below starts from it.
+
+A second principle: **every lane has a “first deliverable”** — a replication, a working prototype, a written investing discipline, an article for a lay reader. Learning without a deliverable is, in the Austrian sense, not action. It is consumption.
+
+**In this lesson we break it into five pieces:**
+
+- **① The research lane: the reading path, a first paper, where to submit, the truth about the job market**
+- **② The building lane: growing Austrian insight into a product — five product types and the “whose problem?” test**
+- **③ The investing lane: framework not tips, the discipline of not timing, learning from the permabear error**
+- **④ The writing and teaching lane: no jargon, platforms, the real opportunity in translation, teaching this course**
+- **⑤ The first 90 days: a plan for each lane, and one shared checkpoint**
+`,
+
+  mechanics: `
+### ① The research lane: the reading path, a first paper, where to submit, the truth about the job market
+
+**The entrance is reading — but not unlimited reading.** Stage 12 gave the path: Menger's *Principles* → the map of *Human Action* → Hayek's arc → Rothbard → the contemporary classics. A researcher adds one layer: **pair every classic with a contemporary paper.** Read Böhm-Bawerk alongside Lewin and Cachanosky; read Chapter 20 of *Human Action* (interest and the cycle) alongside Garrison's *Time and Money* (2001); read Hayek 1945 alongside Foss and Klein. Then what you have read is not history but a line still being extended.
+
+**For your first paper, do not invent theory.** The most common way newcomers die is by setting out to “correct Mises.” The right first paper is a **replication**: take a published applied Austrian analysis — Powell on Japan in Stage 13.3, or Rothbard's account of 1920s credit expansion in Stage 13.2 — and apply the same method to a **new episode**: China's credit cycle of 2015–2020, Europe's energy crisis of 2020–22, the rent-control history of one country. Your contribution is not a new theory but **a new case that demonstrates the theory's range of application** — exactly what Stage 13.1 called “explain, don't test,” and exactly what Stage ∞.1 (c) says is most lacking. A competent paper of this kind runs about 8,000–12,000 words and can be finished in a year.
+
+**Where to submit.** Stage 14.5 listed the venues: the *Quarterly Journal of Austrian Economics* (Mises Institute) is friendliest to newcomers; the *Review of Austrian Economics* (Springer) is closer to mainstream conventions and more cited by the mainstream; the *Journal of Private Enterprise* and *Cosmos + Taxis* take institutional and spontaneous-order work; if your case is solid enough, mainstream outlets like the *Journal of Institutional Economics* or the *Southern Economic Journal* may take it — that is Stage ∞.1 (h)'s “the question is Austrian, the reader need not be.” Conferences: the Austrian Economics Research Conference (AERC, every March in Auburn), the Society for the Development of Austrian Economics (SDAE, attached to the Southern Economic Association meetings), Mises University in summer. **Go to the conference before you submit**: three people met at one AERC are worth ten cold emails.
+
+**The truth about the job market.** Stage 14.5 said it; here it is more bluntly. The United States produces roughly a thousand economics PhDs a year, of whom perhaps fewer than one percent self-identify as Austrian; the economics departments willing to hire an Austrian can be counted on two hands (George Mason, Grove City, Hillsdale, Loyola New Orleans, Angelo State, King Juan Carlos University in Spain, Francisco Marroquín in Guatemala, and a few others). **If your goal is a tenured post, the odds are lottery-like** — unless you do the kind of work in Stage ∞.1 (h) that reaches mainstream journals. The honest alternatives are three: (1) think tanks and institutes (the Mises Institute, Cato, Mercatus, FEE, the Institute for Humane Studies); (2) business schools — as Stage ∞.1 (i) explained, entrepreneurship research is the field most open to Austrians; (3) **the independent researcher**: another job, ten hours a week of research. Some of the best Austrian work ever written came out of this arrangement (Robert Higgs, Lachmann in his early years, a large share of QJAE authors). The third road is nothing to apologize for. It is the school's normal condition.
+
+### ② The building lane: growing Austrian insight into a product — five product types and the “whose problem?” test
+
+The most useful part of Austrian economics for a builder is not “against the central bank.” It is **a set of concrete mechanisms describing how markets work**, and each mechanism translates into a product direction. Five types follow, each naming the lesson whose tool it uses.
+
+**(1) Markets and price discovery.** Stage 1.3 showed how a price grows out of marginal pairs; Stage 6.2 showed competition as a discovery procedure. **Prediction markets** are the most direct embodiment: turn “who will win” or “will this bill pass” into a tradable contract and the price becomes a machine for aggregating dispersed knowledge — Hayek's 1945 essay as a product. The same logic applies to anything that is **scarce but has no price yet**: used equipment, carbon allowances, a creator's future income, parking spaces in a neighborhood. **The builder's question**: where does real scarcity exist without a price? There, a market has not yet been built.
+
+**(2) Tools that widen entrepreneurial alertness.** Kirzner's alertness (Stage 6.1) is noticing a mispricing. Any tool that lets more people **see** more mispricings — cross-platform price comparison, supply-chain data, local demand signals, maps of neglected niches — lowers the cost of alertness. Note the Austrian caveat: tools can widen the field of view, but they **cannot replace judgment**; design the product to put the opportunity in front of a person, not to decide for them.
+
+**(3) Hard money and self-custody infrastructure.** Stage 17 covered Bitcoin, stablecoins and DeFi. The product direction here is **reducing the friction of holding your own assets**: wallets, multisignature schemes, inheritance plans, offline signing, corporate treasury tools. The Austrian contribution is understanding **why** people want self-custody — not geek culture, but the fact that exclusive control over one's property is the core of property rights (Stage 9.1); anything that makes it easier for ordinary people is in demand. The honest risks: regulatory uncertainty, technical difficulty, and the cost of educating users.
+
+**(4) Choice over feeds and algorithms.** Stage 16.2 asked whether recommendation algorithms are a discovery procedure or a manipulation machine, and concluded: it depends on **whether the user can choose.** Product direction: swappable recommendation algorithms, clients built on open protocols, feeds ranked by the user's goals rather than the platform's. This is the logic of currency competition (Stage 9.4) transposed to attention — let algorithms compete instead of letting one monopolize.
+
+**(5) AI that augments judgment rather than replacing it.** Stage 18.3 argued that judgment cannot be automated, because judgment is **bearing** rather than computing. That is not bad news; it is a positioning statement. The most valuable AI tools are not the ones that decide for people but the ones that finish the “computable part” of a decision (search, summary, scenario analysis, counter-arguments) and **leave the non-computable part** (choosing the end, bearing the loss) clearly with the person. Stage 18.2 treats AI as a capital good, and a capital good's value comes from the final consumer it serves — so the question is always “whose judgment does it make better?” never “how smart is it?”
+
+<figure><svg viewBox="0 0 640 320" xmlns="http://www.w3.org/2000/svg" font-family="Inter, system-ui, sans-serif"><text x="320" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="var(--ink)">The first 90 days in four lanes: three 30-day blocks, one shared checkpoint</text><g font-size="10"><text x="150" y="48" text-anchor="middle" fill="var(--muted)">Days 1–30</text><text x="330" y="48" text-anchor="middle" fill="var(--muted)">Days 31–60</text><text x="510" y="48" text-anchor="middle" fill="var(--muted)">Days 61–90</text></g><line x1="240" y1="40" x2="240" y2="300" stroke="var(--line)" stroke-dasharray="3 3"/><line x1="420" y1="40" x2="420" y2="300" stroke="var(--line)" stroke-dasharray="3 3"/><g><rect x="8" y="60" width="52" height="50" rx="6" fill="var(--orange-soft)"/><text x="34" y="90" text-anchor="middle" font-size="11" font-weight="700" fill="var(--orange-ink)">Research</text><rect x="66" y="66" width="168" height="38" rx="5" fill="var(--surface-2)" stroke="var(--line)"/><text x="150" y="89" text-anchor="middle" font-size="10" fill="var(--ink)">Pick a model paper + a new episode</text><rect x="246" y="66" width="168" height="38" rx="5" fill="var(--surface-2)" stroke="var(--line)"/><text x="330" y="89" text-anchor="middle" font-size="10" fill="var(--ink)">Gather data, write the mechanism</text><rect x="426" y="66" width="168" height="38" rx="5" fill="var(--orange-soft)" stroke="var(--orange-line)"/><text x="510" y="89" text-anchor="middle" font-size="10" fill="var(--ink)">Draft → two readers → conference</text></g><g><rect x="8" y="120" width="52" height="50" rx="6" fill="var(--blue-soft)"/><text x="34" y="150" text-anchor="middle" font-size="11" font-weight="700" fill="var(--blue)">Build</text><rect x="66" y="126" width="168" height="38" rx="5" fill="var(--surface-2)" stroke="var(--line)"/><text x="150" y="149" text-anchor="middle" font-size="10" fill="var(--ink)">Find unpriced scarcity; interview 10</text><rect x="246" y="126" width="168" height="38" rx="5" fill="var(--surface-2)" stroke="var(--line)"/><text x="330" y="149" text-anchor="middle" font-size="10" fill="var(--ink)">Minimal prototype, matched by hand</text><rect x="426" y="126" width="168" height="38" rx="5" fill="var(--blue-soft)" stroke="var(--blue)"/><text x="510" y="149" text-anchor="middle" font-size="10" fill="var(--ink)">First real trade / payment</text></g><g><rect x="8" y="180" width="52" height="50" rx="6" fill="var(--green-soft)"/><text x="34" y="210" text-anchor="middle" font-size="11" font-weight="700" fill="var(--green)">Invest</text><rect x="66" y="186" width="168" height="38" rx="5" fill="var(--surface-2)" stroke="var(--line)"/><text x="150" y="209" text-anchor="middle" font-size="10" fill="var(--ink)">Write a one-page discipline</text><rect x="246" y="186" width="168" height="38" rx="5" fill="var(--surface-2)" stroke="var(--line)"/><text x="330" y="209" text-anchor="middle" font-size="10" fill="var(--ink)">Post-mortem one past “timing” call</text><rect x="426" y="186" width="168" height="38" rx="5" fill="var(--green-soft)" stroke="var(--green)"/><text x="510" y="209" text-anchor="middle" font-size="10" fill="var(--ink)">Run one cycle by the rules, no edits</text></g><g><rect x="8" y="240" width="52" height="50" rx="6" fill="var(--red-soft)"/><text x="34" y="270" text-anchor="middle" font-size="11" font-weight="700" fill="var(--red)">Write</text><rect x="66" y="246" width="168" height="38" rx="5" fill="var(--surface-2)" stroke="var(--line)"/><text x="150" y="269" text-anchor="middle" font-size="10" fill="var(--ink)">Explain one lesson to a layperson</text><rect x="246" y="246" width="168" height="38" rx="5" fill="var(--surface-2)" stroke="var(--line)"/><text x="330" y="269" text-anchor="middle" font-size="10" fill="var(--ink)">Publish 4 pieces, ≤ 1,000 words each</text><rect x="426" y="246" width="168" height="38" rx="5" fill="var(--red-soft)" stroke="var(--red)"/><text x="510" y="269" text-anchor="middle" font-size="10" fill="var(--ink)">First reply from a stranger</text></g><text x="320" y="312" text-anchor="middle" font-size="10" fill="var(--orange-ink)" font-weight="600">Shared checkpoint (day 90): is there a deliverable someone else can see? If not, these 90 days were consumption, not action.</text></svg><figcaption>All four lanes share one rhythm: month one fixes the target and the audience, month two makes something rough, month three puts it in someone else's hands. The right-hand column holds each lane's “first deliverable.”</figcaption></figure>
+
+**The “whose problem?” test.** Stage 6.3 explained profit and loss as consumers voting on entrepreneurs. Compress it into a one-sentence product test: **“This product solves (a specific who)'s (specific what), and they will give (what) for it.”** If any of the three brackets cannot be filled, it is not yet a product — it is a position. “A tool for the Austrian community” almost always dies in the first bracket: the community is too small, and it is not a market, it is a reading group. **The users of a good Austrian product do not know what Austrian means** — prediction-market users care about odds, wallet users care about not losing their coins.
+
+### ③ The investing lane: framework not tips, the discipline of not timing, learning from the permabear error
+
+First, the disclaimer from Stage 10.5, repeated: **this section is about a framework and about history. It is not investment advice.** Your money, your risk tolerance and your time horizon are known only to you.
+
+**Framework, not tips.** What Austrian economics gives an investor is not “what to buy” but a handful of **structural judgments**: (1) a central bank holding the rate below the natural rate systematically inflates long-duration assets (Stages 3.5, 10.3) — so in a period of multiple expansion, know that you are paying for “the rate,” not for “growth”; (2) a credit-driven boom flows first to upstream, capital-intensive industries (Stage 5.2) — so late in the cycle, their profits are borrowed; (3) the Cantillon effect (Stage 4.3) tells you where new money arrives first — assets close to the central bank rise first, wages lose purchasing power last; (4) hard assets protect purchasing power against currency debasement, but **not in every single year.** Together these are not a trading system; they are a pair of glasses that make you think “duration” when you hear “lowest rates in history,” rather than “new era.”
+
+**The discipline of not timing.** Here is where Austrian investors most often fail, and Stage 14.4 already wrote it down: **the theory tells you the boom is unsustainable; it does not tell you when it ends.** Mises was explicit — theory predicts patterns, not dates. An Austrian who shorted the stock market in 2010 because of QE had lost everything by 2020, even though his judgment that “this is credit expansion” was correct. So the discipline is: **use Austrian judgment for allocation, never for timing.** Concretely: decide how much hard-asset, long-duration and cash exposure you are willing to hold for the long run, write it down, adjust it by the cycle and not by the news — **and then leave it alone.** Someone who rebalances once every January and otherwise does not look is closer to an Austrian investor than someone who reads every Fed meeting through ABCT.
+
+**Learn from the permabear error.** The column of failed predictions in Stage 14.4 — hyperinflation after 2009, the dollar collapse of 2011, the “great crash” of every year since — has one mechanism behind it: **translating “unsustainable” into “imminent.”** The cost is not only money but credibility: someone who cried wolf for a decade was not heard in the year the wolf came (2022). The correction is concrete. Every time you are tempted to make a directional call, first write down **“what evidence would change my mind”** (one of the rubric items of Stage ∞.3), then write down **“if I am wrong for three years, what happens to my portfolio.”** If the answer to the second is “it goes to zero,” that is not an Austrian judgment. It is a bet.
+
+**The honest odds in this lane**: for most people, the result of investing with an Austrian framework is **making fewer big mistakes** — not chasing long-duration assets at the top, not sitting entirely in cash through a monetary expansion, not treating “unsustainable” as a timing signal — rather than earning excess returns. That is worth a great deal; but set the expectation where it belongs.
+
+### ④ The writing and teaching lane: no jargon, platforms, the real opportunity in translation, teaching this course
+
+**Why this lane is undervalued.** Because it looks unsophisticated. But look back: *Human Action* reached far beyond academia because Henry Hazlitt wrote the 200-page *Economics in One Lesson* in 1946; the most influential edition of *The Road to Serfdom* was the *Reader's Digest* condensation. **Half the history of Austrian influence is the history of popular writing.** In the Chinese-language world, that half is still largely blank.
+
+**Explain without jargon.** The rule of Stage 14.2 is a matter of life and death here: **the first time any Austrian term appears, replace it with a concrete example.** Not “Cantillon effect” but “the new money reaches the banks first and your paycheck last, and prices have risen in between”; not “malinvestment” but “when the rate is pushed down, projects that should never have broken ground break ground.” The test: give the piece to a friend who has never studied economics and ask them to repeat the main argument. If they cannot, rewrite. **Every example in this course — five buckets of water, where a hundred new dollars flow, a rate pushed from 5% to 2% — is ready-made teaching material.**
+
+**Platforms.** Stage 16.3 described the creator economy: platforms have pushed the fixed cost of distribution to zero, and the remaining scarcity is attention (Stage 16.1). Practical choices: long-form on Substack or a WeChat public account or a Zhihu column; video on YouTube or Bilibili; audio as a podcast. **Cadence matters more than platform**: one 1,000-word piece a week beats one 15,000-word piece a quarter by a factor of ten, because readers build trust through repetition. Your reader numbers in the first six months will be discouraging; that is normal — creator-economy returns are extremely skewed, and the tail grows only with time.
+
+**Translation: a real opportunity that can be stated modestly.** The state of Austrian material in Chinese is roughly this: *Human Action* has translations (the classic by Hsia Tao-ping in Taiwan, and newer mainland editions); *The Road to Serfdom* and *The Fatal Conceit* circulate widely; but Kirzner's *Competition and Entrepreneurship*, Garrison's *Time and Money*, Huerta de Soto's *Money, Bank Credit, and Economic Cycles* are either hard to find or absent; and **the contemporary papers — Lewin and Cachanosky, Foss and Klein, Boettke and Coyne, Selgin — have essentially no Chinese versions at all.** Mainland China has a small number of scholars who work seriously on Austrian economics (Zhang Weiying, Zhu Haijiu, Feng Xingyuan among them) and some informal communities, but compared with the English-language world, **the supply is astonishingly thin.** That means a person who understands the school and writes good Chinese could translate one 2019 survey paper with commentary and make a larger marginal contribution than a whole book would make in English. It is a Kirznerian mispricing; it needs neither exaggeration nor false modesty. **Mind copyright**: obtain permission before publishing a translation; most Mises Institute material is openly licensed (CC BY), journal articles are not.
+
+**Teach this course.** The simplest deliverable: find three people and go through the 96 lessons with them, one a week. You will discover that you cannot explain the Hayekian triangle of Stage 3.2 or the “lying rate” of Stage 5.1 cleanly — that is where you did not really understand. **Teaching is the strictest form of learning.** After one round, you will know the hard spots better than most people who write about Austrian economics, and when you then write, you will have readers.
+
+### ⑤ The first 90 days: a plan for each lane, and one shared checkpoint
+
+Every lane's 90 days splits into three 30-day blocks: **fix the target → make something rough → put it in someone else's hands.**
+
+**Research (8–10 hours a week).** Days 1–30: pick a model paper from Stage 13 and a new episode it does not cover; read the model three times and write out its mechanism chain (“credit expansion → upstream rises first → …”). Days 31–60: gather the same type of data for the new episode (central-bank balance sheet, industry investment, price ratios), match the chain link by link, write the “mechanism” section. Days 61–90: write a full draft, find two readers (one Austrian, one not), revise, submit an abstract to a conference (AERC or SDAE). **Deliverable: an 8,000-word replication draft.**
+
+**Building (10–15 hours a week).** Days 1–30: list five situations of “scarcity without a price” or “judgment without information,” interview ten potential users, and use the “whose problem?” test to cut the list to one. Days 31–60: build the minimal prototype — **by hand first**: a prediction market begins as a spreadsheet and a group chat; a custody tool begins as a written procedure. Days 61–90: get one person who does not know you to complete a real use or payment. **Deliverable: one real transaction from a stranger.**
+
+**Investing (2 hours a week — deliberately few).** Days 1–30: write a one-page discipline: long-run allocation, rebalancing frequency, “what evidence would change my mind,” “what if I am wrong for three years.” Days 31–60: post-mortem one past timing decision — was the reasoning “unsustainable = imminent”? Days 61–90: execute by the rules, **adjusting only on the pre-set date.** **Deliverable: a written discipline, executed once.** Once more: this is not investment advice.
+
+**Writing and teaching (4–6 hours a week).** Days 1–30: pick the lesson you like best, explain it to a layperson, and note where they got lost. Days 31–60: publish four pieces of at most 1,000 words, each on a single mechanism with one numerical example. Days 61–90: keep publishing; start a three-person group that covers one lesson a week. **Deliverable: the first reply from a reader you do not know, or the group's twelfth lesson.**
+
+**The shared checkpoint (day 90)**: is there a deliverable **someone else can see**? If not, these 90 days were consumption in the Austrian sense, not action — which is fine; start again with half the target.
+
+Finally, back to the through-lines. The course's four sentences — value is subjective, people act purposefully, prices carry knowledge, time and uncertainty cannot be assumed away — become a constraint in each lane: the researcher must accept **uncertainty** (your paper may go unread); the builder must submit to **subjective value** (the user decides, not the theory); the investor must respect **time** (no timing); the writer must transmit **knowledge**, not positions. Stage ∞.3 has you write one analysis first — it is the shared first step of all four lanes.
+`,
+
+  demo: "opportunity-lens",
+
+  analogy: `
+Think of this course as a **driver's license.**
+
+People who pass the test go one of four ways. Some become **racing drivers** (research) — the bar is extremely high and almost nobody makes the track, but the track is the only place where cars get made faster. Some start a **haulage business** (building) — the license is just the beginning; the real question is “what cargo, from where to where, and who pays,” and driving skill is secondary. Most simply **drive to work** (investing) — the most ordinary use, whose greatest value is **not crashing**: no speeding (no timing), seatbelt on (a written discipline), no driving drunk (not mistaking “unsustainable” for “imminent”). And some become **driving instructors** (writing and teaching) — the least glamorous, yet every racer, every hauler and every safe commuter learned from one; and in the Chinese-speaking world there are far too few of them.
+
+The license itself is worth nothing. **What is worth something is where you drive.** A person who holds a license, sits in the parking lot, and argues with passers-by about the internal combustion engine is this course's saddest ending — and its most common one. The four lanes are the four exits from the parking lot; the 90-day plan exists so that you drive out at least once.
+`,
+
+  misconceptions: [
+    "**“The natural output after learning Austrian economics is criticizing the mainstream online.”** — That is the most oversupplied good in this small market, an overvalued asset in Kirzner's sense. What is undervalued is empirical checking, usable tools and good explanation in Chinese. Look at Austrian opportunities the Austrian way and the mispricing is elsewhere.",
+    "**“Austrian investing means holding gold or Bitcoin and waiting for the crash.”** — That is the permabear, the number-one error of Stage 14.4. The theory says the boom is unsustainable; it never gives a date. The discipline is judgment for allocation, never for timing, plus a written “what evidence would change my mind” and “what if I am wrong for three years.” Nothing in this course is investment advice.",
+    "**“A product ‘for the Austrian community’ is a good place to start building.”** — The community is too small, and it is a reading group, not a market. The users of a good Austrian product do not know what Austrian means: prediction-market users care about odds, wallet users about not losing coins. The first bracket of the “whose problem?” test must hold a real, large enough “who.”",
+    "**“A first paper should propose one's own correction to the theory.”** — That is how newcomers most often die. The right first paper is a replication: apply a published applied analysis to a new episode and demonstrate the theory's range — exactly what Stage ∞.1 says is most lacking, and something finishable in a year.",
+    "**“Writing and teaching is the ‘unsophisticated’ lane.”** — Half of the history of Austrian influence is popular writing: Hazlitt's *Economics in One Lesson*, the *Reader's Digest* *Road to Serfdom*. In Chinese that half is nearly blank, and the contemporary papers have no translations. Lowest entry cost, longest compounding — and teaching is the strictest form of learning.",
+  ],
+
+  quiz: [
+    {
+      q: "What does this lesson recommend as a researcher's “first paper”?",
+      options: [
+        "A survey criticizing Keynesianism",
+        "A philosophical paper on Austrian method",
+        "A theoretical correction to one of Mises's propositions",
+        "A replication of a published applied Austrian analysis on a new episode",
+      ],
+      answer: 3,
+      explain: "A replication demonstrates **the theory's range of application**, sits entirely within “explain, don't test,” is finishable in a year, and is exactly what Stage ∞.1 (c) says is most lacking. An original theoretical correction is how newcomers most often die.",
+    },
+    {
+      q: "In the “whose problem?” test, where does “a tool for the Austrian community” usually fail?",
+      options: [
+        "At “what problem” — Austrians have no problems",
+        "At “a specific who” — the community is too small and is a reading group, not a market",
+        "At “what they will give” — Austrians refuse to pay",
+        "It does not fail; it is the best starting point",
+      ],
+      answer: 1,
+      explain: "The users of a good Austrian product need not know what Austrian means. Prediction-market users care about odds, wallet users about not losing coins — the first bracket needs a real and sufficiently large “who.”",
+    },
+    {
+      q: "The Austrian investing discipline of “judgment for allocation, never for timing” is meant to avoid what?",
+      options: [
+        "Transaction costs",
+        "Holding too much cash",
+        "The permabear error of translating “unsustainable” into “imminent”",
+        "Being hurt by the Cantillon effect",
+      ],
+      answer: 2,
+      explain: "Theory predicts patterns, not dates. Someone who shorted stocks in 2010 because of QE had lost everything by 2020 even though “this is credit expansion” was right. Allocation can embody Austrian judgment; timing is a bet.",
+    },
+    {
+      q: "Why does the lesson call translation a real opportunity in the Chinese-language world?",
+      options: [
+        "Because contemporary Austrian papers have almost no Chinese versions — the supply is thin, so the marginal contribution is large",
+        "Because there are more Chinese readers than English readers",
+        "Because translation does not require understanding economics",
+        "Because translation has no copyright issues",
+      ],
+      answer: 0,
+      explain: "It is a Kirznerian mispricing: demand exists and supply is nearly zero. Note that permission is required before publishing a translation — most Mises Institute material is openly licensed; journal articles are not.",
+    },
+    {
+      q: "What is the shared day-90 checkpoint across all four lanes?",
+      options: [
+        "Finishing Human Action",
+        "Earning the first dollar",
+        "Reaching 1,000 followers",
+        "Having a deliverable that someone else can see",
+      ],
+      answer: 3,
+      explain: "Learning without a deliverable is consumption, not action, in the Austrian sense. The deliverables differ by lane (a replication draft, a stranger's transaction, an executed discipline, a lay reader's reply), but each must be **visible to someone else.**",
+    },
+  ],
+
+  further: [
+    { label: "Quarterly Journal of Austrian Economics (QJAE) — the Austrian journal friendliest to newcomers", url: "https://mises.org/quarterly-journal-austrian-economics" },
+    { label: "Review of Austrian Economics (Springer) — closer to mainstream conventions, more cited by the mainstream", url: "https://link.springer.com/journal/11138" },
+    { label: "Mises Institute events — the Austrian Economics Research Conference (AERC) and Mises University", url: "https://mises.org/events" },
+    { label: "Hazlitt, Economics in One Lesson (1946) — the model of popular writing (full text at FEE)", url: "https://fee.org/resources/economics-in-one-lesson/" },
+    { label: "Kirzner, Competition and Entrepreneurship (1973) — alertness and mispricing (Mises Institute)", url: "https://mises.org/library/book/competition-and-entrepreneurship" },
+  ],
+};

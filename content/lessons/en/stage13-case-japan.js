@@ -1,0 +1,208 @@
+export default {
+  id: "case-japan",
+  stage: 13,
+  order: 3,
+  title: "Case: Japan's Lost Decades",
+  difficulty: "mastery",
+  prereqs: ["debt-zombies"],
+
+  oneLiner:
+    "On 29 December 1989 the Nikkei closed at about 38,900. The next time it closed there was 2024 — **thirty-four years later.** In between lies the longest “no liquidation” experiment in economic history: more than ten fiscal stimulus packages, public debt climbing past 200% of GDP, zero rates from 1999, quantitative easing from 2001, Abenomics in 2013, yield-curve control in 2016. The Austrian reading (Powell 2002): **the boom was built on credit, and the bust was prevented from finishing its work.** The Keynesian reading (Krugman 1998): a liquidity trap, with stimulus too small and too timid. This lesson gives both readings their strongest form, then asks what Japan teaches the West after 2008 — and how much weight the factors Austrians tend to skip, demographics and deflation, really deserve.",
+
+  intuition: `
+Tokyo in the late 1980s: taxi drivers talked stocks, golf-club memberships traded on an exchange, and a bank might value a plot of land at ten times the building on top of it. One claim circulated everywhere: **the grounds of the Imperial Palace were “worth” more than the whole state of California.** Nobody ever actually did that calculation, but the fact that it circulated tells you the mood.
+
+Then everything stopped. Stocks halved in 1990; land prices began a decline that lasted fifteen years. Over the next thirty years Japan's nominal GDP barely grew, prices drifted gently down, public debt rose from about 60% of GDP to more than double, and interest rates fell to zero and then below. The “lost decade” became the “lost two decades,” then “lost three.”
+
+**Why?** Stage 5.4 ran Japan through ABCT at speed. This lesson does the full application Stage 13.1 described: theory kept as theory, Japan's unique history laid out in full, and the competing explanations compared at the level of application.
+
+Here are the two main readings in their shortest form:
+
+**Austrian (Powell, “Explaining Japan's Recession,” 2002):** after the Plaza Accord of 1985 the yen soared, and the Bank of Japan, to offset the damage to exporters, cut rates hard and let the money supply grow at about 10% a year — a textbook credit expansion. New money poured into land, stocks and capital investment and built a bubble. In 1989–90 the BOJ raised rates and the Ministry of Finance capped real-estate lending; the boom ended — **and up to that point everything is normal: this is the start of the liquidation of Stage 5.3.** What was abnormal came afterward: the government used a dozen stimulus packages to build bridges nobody crosses, used “convoy” regulation to keep insolvent banks upright, let banks roll over loans to insolvent firms (zombies, Stage 10.4), and pushed rates to zero so that every project that should have exited could keep borrowing. **Liquidation was blocked, resources stayed locked in the wrong places, so the economy did not recover.**
+
+**Keynesian (Krugman 1998, Bernanke 2000):** after the bubble burst, households and firms were all repairing balance sheets; the desire to save far exceeded the desire to invest, and the equilibrium real interest rate fell below zero. The nominal rate was already at zero and could go no lower — a **liquidity trap.** In that situation fiscal stimulus is the only effective tool, and Japan's was in fact limited and stop-go (Posen 1998 showed the announced figures far exceeded what was actually spent); for monetary policy to work, the central bank must “credibly promise to be irresponsible” — commit to inflation, to push the real rate negative. The BOJ was too cautious and too late, so the trap never released.
+
+The two readings **look at different sides of the same history**, and — this is the point to hold onto — they **agree** on several key facts: the 1980s was a bubble, the 1990s banking system was rotten, and fiscal stimulus did not deliver a lasting recovery. The disagreement is over **the direction of causation**: Austrians say “stimulus blocked liquidation, hence no recovery,” Keynesians say “stimulus was too small, hence no recovery.” To judge between those sentences you need structural data: who was borrowing, for what, which firms were alive that should not have been, which capacity never left.
+
+Several things cannot be skipped, because Austrian articles skip them all the time: Japan's **population** began aging in the mid-1990s and its working-age population peaked, and measured per working-age person Japan's output growth in the 2000s was not far behind America's; Japan's **deflation** was mild (about −0.5% a year on average), unemployment never passed 6%, and living standards stayed very high. What exactly was lost in the “lost decades”? The answer shapes how you grade every explanation.
+
+And here is the real use of this lesson: after 2008, everything Western central banks did — zero rates, QE, bank life support, fiscal stimulus — Japan had done ten to twenty years earlier. **Japan is the West's dress rehearsal.** It shows where the debt and zombification of Stage 10.4 lead, and it previews the puzzle of Stage 13.4: why printing so much money produced no inflation.
+
+**In this lesson we break it into five pieces:**
+
+- **① 1985–89: the Plaza Accord, BOJ easing, and the biggest asset bubble in history**
+- **② 1989–92: Mieno “pricks the bubble,” the crash — and up to here, everything is normal**
+- **③ The 1990s: liquidation forbidden — the convoy system, zombie banks, a dozen stimulus packages, and public debt**
+- **④ 1999 to today: ZIRP, QE, Abenomics and yield-curve control — and why no new bubble appeared**
+- **⑤ Three readings compared, what Japan teaches the West, and some honest caveats**
+`,
+
+  mechanics: `
+### ① 1985–89: the Plaza Accord, BOJ easing, and the biggest asset bubble in history
+
+> **A note on measurement.** Wherever this lesson says “rates were pushed down,” “easing” or “credit expansion,” it is using the **proxies** from the four-box checklist of Stage 5.4 — the policy rate against its prior level, money and credit growth, the real rate against trend growth — not a measured natural rate. As Stage 3.5 showed, r* is not directly observable. These are relative judgments, not readings.
+
+
+**It began as an exchange-rate problem.** In September 1985 the finance ministers of the US, Japan, Britain, France and West Germany agreed at the Plaza Hotel in New York to push the dollar down together. The yen went from about 240 to the dollar to about 120 within a little over two years — **it doubled.** Japanese exporters howled, and political pressure demanded that the Bank of Japan “offset” the appreciation. The BOJ complied: the official discount rate fell from 5% in early 1986 to **2.5%** in February 1987 — a record low at the time — and **stayed there for more than two years**, until May 1989. Meanwhile broad money (M2+CDs) grew at about 10% a year, far faster than nominal GDP.
+
+What Austrians see is the diagram of Stage 5.1: **the market rate pushed below the natural rate.** Japan's saving rate was high, so the natural rate was not high to begin with, but a 2.5% policy rate plus competition among lenders (financial liberalization in the 1980s had sent big corporations to the bond market, so banks went hunting for real-estate and small-business borrowers) pushed credit toward the longest-lived, most rate-sensitive assets: **land and stocks.**
+
+The numbers, approximately: the Nikkei 225 rose from about 13,000 in 1985 to **38,915** on 29 December 1989 — triple in four years. Commercial land prices in Tokyo roughly doubled or tripled between 1985 and 1990, and the six-major-cities commercial land index rose even more. By 1989 Japanese stocks were at one point around 40% of world market capitalization, and price-earnings ratios on the Tokyo exchange were commonly above 60. The “Imperial Palace worth more than California” line was born in this period — **treat it as a record of the mood, not as data.**
+
+The transmission of credit deserves a closer look, because it explains why liquidation later proved so hard:
+
+- **Land is collateral; rising collateral expands lending capacity; lending pushes land prices higher.** Banks lent against land, firms used loans to buy land or invest, land rose again — a reflexive loop (Stage 16.5 covers reflexivity), with credit expansion as its fuel.
+- **Cross-shareholdings.** Firms within a keiretsu held each other's shares, and banks held their clients' shares and counted unrealized gains as capital — stocks up, bank capital up, lending capacity up. **When stocks fell, bank capital evaporated in step.**
+- **The jusen and non-bank lenders.** When the Ministry of Finance began restricting bank real-estate loans in 1990, lending was rerouted through the jusen housing-loan companies and other non-banks and kept flowing into property.
+- **Capital-goods investment.** Not only assets: in 1988–91 Japanese business investment in plant and equipment rose to about 20% of GDP, with manufacturers planning capacity for bubble-era demand — malinvestment in the ABCT sense, not merely an asset-price story.
+
+<figure><svg viewBox="0 0 640 320" xmlns="http://www.w3.org/2000/svg" font-family="Inter, system-ui, sans-serif"><text x="320" y="22" text-anchor="middle" font-size="13" font-weight="700" fill="var(--ink)">Japan 1985–2024: the Nikkei, the policy rate, and “no liquidation” piled ever higher (illustrative)</text><line x1="50" y1="220" x2="610" y2="220" stroke="var(--line)"/><line x1="50" y1="50" x2="50" y2="220" stroke="var(--line)"/><g font-size="9.5" fill="var(--muted)" text-anchor="middle"><text x="50" y="235">1985</text><text x="122" y="235">1990</text><text x="194" y="235">1995</text><text x="266" y="235">2000</text><text x="338" y="235">2005</text><text x="410" y="235">2010</text><text x="482" y="235">2015</text><text x="554" y="235">2020</text><text x="610" y="235">2024</text></g><rect x="50" y="50" width="72" height="170" fill="var(--orange-soft)" opacity=".55"/><text x="86" y="64" text-anchor="middle" font-size="9.5" font-weight="700" fill="var(--orange-ink)">Credit boom</text><rect x="122" y="50" width="130" height="170" fill="var(--red-soft)" opacity=".4"/><text x="187" y="64" text-anchor="middle" font-size="9.5" font-weight="700" fill="var(--red)">Liquidation blocked</text><rect x="252" y="50" width="358" height="170" fill="var(--blue-soft)" opacity=".35"/><text x="431" y="64" text-anchor="middle" font-size="9.5" font-weight="700" fill="var(--blue)">ZIRP → QE → Abenomics → YCC</text><polyline fill="none" stroke="var(--orange)" stroke-width="2.5" points="50,170 64,160 79,140 93,118 108,90 122,72 136,130 151,150 165,140 180,150 194,145 209,160 223,150 238,160 252,150 266,165 280,175 295,185 309,170 324,160 338,150 353,140 367,175 382,185 396,178 410,180 425,175 439,150 453,135 468,125 482,120 496,125 511,120 525,115 540,110 554,110 568,100 583,90 597,78 610,72"/><polyline fill="none" stroke="var(--blue)" stroke-width="2" stroke-dasharray="4 3" points="50,150 64,165 79,185 93,185 108,185 122,140 136,160 151,185 165,200 180,205 194,210 209,212 223,212 238,213 252,216 266,216 280,216 295,216 309,216 324,216 338,216 353,214 367,214 382,216 396,216 410,216 425,216 439,216 453,216 468,216 482,216 496,218 511,218 525,218 540,218 554,218 568,218 583,218 597,216 610,214"/><text x="614" y="74" font-size="9" fill="var(--orange-ink)">Nikkei</text><text x="614" y="214" font-size="9" fill="var(--blue)">rate</text><g font-size="8.5" fill="var(--ink)"><text x="122" y="88" text-anchor="middle" font-weight="700">38,915</text><text x="122" y="98" text-anchor="middle">Dec 1989</text><text x="151" y="165" text-anchor="middle">1992 first package</text><text x="209" y="175" text-anchor="middle">1997–98 bank crisis</text><text x="252" y="80" text-anchor="middle">1999 ZIRP</text><text x="280" y="92" text-anchor="middle">2001 QE</text><text x="453" y="80" text-anchor="middle">2013 Abe</text><text x="496" y="92" text-anchor="middle">2016 YCC</text><text x="597" y="60" text-anchor="middle">2024 regained</text></g><text x="320" y="262" text-anchor="middle" font-size="10.5" fill="var(--muted)">Gold: Nikkei 225 (stylized: 38,915 in 1989 → about 7,600 in 2003 → back to 39,000 in 2024) · blue dashed: BOJ policy rate (2.5% in 1987 → 6% in 1990 → 0 in 1999 → −0.1% in 2016)</text><text x="320" y="280" text-anchor="middle" font-size="10.5" fill="var(--muted)">Three bands: credit boom → liquidation blocked (stimulus + convoy) → thirty years of rates pinned to the floor</text><text x="320" y="298" text-anchor="middle" font-size="10" fill="var(--muted)">Approximate values; sources: Bank of Japan, Japan Exchange Group, Powell (2002), Hoshi &amp; Kashyap (2004)</text></svg><figcaption>The stock market took thirty-four years to regain its 1989 peak, and for nearly all of those years the policy rate sat at zero. The Austrian question: if pushing rates down cures a depression, why were thirty years not enough?</figcaption></figure>
+
+### ② 1989–92: Mieno “pricks the bubble,” the crash — and up to here, everything is normal
+
+In December 1989 Yasushi Mieno became governor of the Bank of Japan; the press later called him the man who pricked the bubble. The discount rate rose in five steps from 2.5% in May 1989 to **6%** by August 1990. In March 1990 the Ministry of Finance imposed “total volume control” on bank lending to real estate. **The credit expansion stopped.**
+
+The consequences unfolded in the ABCT sequence (Stage 5.2): first the most rate-sensitive assets — the Nikkei fell from 38,915 to about 20,000 within 1990, a halving; then land — prices began falling in 1991 and kept falling for fifteen years, with commercial land in the six major cities eventually losing about 80%; then the credit chain built on asset collateral — the jusen, the non-banks, then the banks themselves; and finally the real economy — equipment investment fell year after year from 1991, and excess capacity in manufacturing was exposed.
+
+**Up to this point an Austrian says: everything is normal.** This is the beginning of the liquidation of Stage 5.3. Mieno did the one thing Austrians think a central bank can do at the end of a boom: stop expanding and let the malinvestment show. The declines of 1990–92 were the **cure** for the disease (the credit expansion of the 1980s) getting under way. Had Japan at that point let banks fail, let land fall quickly to its floor, let excess capacity exit, and let wages and prices adjust, the Austrian expectation would be a sharp but short depression — like America's in 1920–21 (Stage 13.2).
+
+Japan did not do that.
+
+### ③ The 1990s: liquidation forbidden — the convoy system, zombie banks, a dozen stimulus packages, and public debt
+
+Nearly every Japanese policy of the 1990s has a place in Mises's “dynamics of intervention” from Stage 8.1: each intervention creates the problem that calls for the next. Follow three threads.
+
+**Thread one: the banking “convoy.”** Postwar Japanese financial regulation ran on the principle that the Ministry of Finance made strong banks tow weak ones; nobody was allowed to sink. After the bubble burst, banks' books filled with bad loans — the officially admitted figure in the mid-1990s was tens of trillions of yen, independent estimates far higher. The regulators chose **forbearance**: banks were allowed to carry bad loans as performing, to count unrealized stock gains as capital, and were not forced to write off. The jusen crisis of 1995 was resolved with public funds; in November 1997 Hokkaido Takushoku Bank and Yamaichi Securities failed — the first large institutions allowed to fall, **seven years after the bubble burst.** In 1998 the Long-Term Credit Bank and Nippon Credit Bank were nationalized and the government injected tens of trillions of yen.
+
+**Thread two: zombie firms.** This is Japan's most important contribution to Austrian theory, and the empirical work was done by mainstream scholars. Hoshi and Kashyap (2004, *Journal of Economic Perspectives*) and Caballero, Hoshi and Kashyap (2008, *American Economic Review*) used firm-level data to show that Japanese banks in the 1990s systematically **rolled over** loans to insolvent firms (“evergreening”) — because recognizing a default meant writing off the loan, and writing off meant exposing the bank's own capital shortfall. They estimated that around 2000 roughly 30% of listed Japanese firms were “zombies” (kept alive by subsidized credit), concentrated in construction, real estate, retail and services — **precisely the sectors that had swelled most in the bubble.** The more important finding: in industries with a high zombie share, healthy firms' investment and employment growth were significantly lower — **zombies not only refused to die, they crowded out the living.** That is the mechanism of Stage 10.4 exactly: unliquidated malinvestment locks capital and labor into low-productivity uses, price signals are distorted (zombies compete at loss-making prices), and healthy firms cannot expand.
+
+**Thread three: fiscal stimulus.** From the first package in August 1992 to 2000, the Japanese government launched **more than ten** “economic measures,” with announced totals above ¥100 trillion (about a fifth of GDP). The bulk was public works: roads, bridges, dams, airports, ports — many in sparsely populated places; “bridges to nowhere” and “airports without flights” became bywords for Japanese public works. This is Bastiat's broken window of Stage 1.4: the seen is the construction and the jobs, the unseen is where the diverted saving would otherwise have gone. The result: **public debt rose from about 60% of GDP in 1990 to about 130% in 2000 and past 200% in the 2010s, the highest in the developed world** (gross; net debt is roughly half). And recovery did not come.
+
+Powell's 2002 paper ties the three threads together: **the boom was built on credit; the bust should have completed the liquidation; but the convoy blocked bank liquidation, evergreening blocked corporate liquidation, and public works drained saving to prop up the construction sector that the bubble had swollen most.** Every policy was meant to “prevent pain”; every policy in effect prevented the cure.
+
+Austrians must add an honest sentence: **liquidation was not entirely prevented, only delayed by a decade.** Between 1997 and 2003, with the banking crisis and the Koizumi government's reforms (Heizo Takenaka's 2002 “Program for Financial Revival” forced banks to write off bad loans and halve their non-performing ratios), the zombie share fell markedly, and Japan saw a modest recovery in 2003–07. That time sequence — once liquidation is pushed forward, recovery appears — is important support for the Austrian causal story, more persuasive than any aggregate regression.
+
+### ④ 1999 to today: ZIRP, QE, Abenomics and yield-curve control — and why no new bubble appeared
+
+In February 1999 the Bank of Japan cut its policy rate to zero — the first in the world. A brief hike to 0.25% in August 2000 drew wide criticism, and in March 2001 the BOJ not only returned to zero but began the world's first **quantitative easing**: targeting the balance of bank reserves and buying government bonds in bulk. It exited in 2006 and restarted after 2008. In April 2013 Haruhiko Kuroda, appointed by Shinzo Abe's government, launched “quantitative and qualitative easing” (QQE): double the monetary base in two years, aiming at 2% inflation — the first of the “three arrows” of Abenomics (monetary easing, fiscal stimulus, structural reform). In January 2016 came negative rates (−0.1%), and in September **yield-curve control** (YCC): the 10-year government-bond yield pinned near 0%, with the BOJ committed to buy without limit. By the early 2020s the BOJ held more than half of all outstanding government bonds plus a large stock of equity ETFs — one of the largest single holders of Japanese stocks. In March 2024 the BOJ ended negative rates and YCC — the (provisional) end of the longest monetary experiment in the world.
+
+How do Austrians read those twenty-five years? Two questions.
+
+**First: why did twenty-five years of suppressed rates not cure the depression?** This is the Austrian challenge to the entire Keynesian–monetarist prescription. If the problem were “rates too high, demand too low,” twenty-five years at zero should have fixed it long ago. The Austrian answer: the problem was never the level of the rate but **resources locked in the wrong places** — zombie firms, excess capacity, a construction sector kept alive by public works — and zero rates were **the lock itself**: they let every project that should have exited refinance at no cost, and gave capital that should have moved no reason to move. Stage 3.5 explained that the interest rate is the price of intertemporal coordination; pin that price at zero and you switch off every intertemporal signal. Japan spent twenty-five years proving that **you can push the rate through the floor, but you cannot push out projects entrepreneurs want to fund.**
+
+**Second: why did zero rates not create another 1980s-style bubble?** This is the “counter-evidence that must be confronted” from Stage 13.1. ABCT says credit expansion builds bubbles; Japan's monetary base multiplied several times between the late 1990s and 2020 — where is the bubble? The Austrian answer has three layers. (a) **Base money is not credit.** Most of what the BOJ printed sat in bank reserves; with bank capital impaired and firms unwilling to borrow (Richard Koo's “balance-sheet recession” observation is correct here), broad money and bank credit grew very little — ABCT's mechanism works through **bank credit expansion**, and that link was broken in Japan. It is the same story as America in 2010–19, which Stage 13.4 covers. (b) **The new money did build a bubble, just elsewhere**: in government bonds — yields pushed to zero and below, public debt above twice GDP with no default premium, a price held up by central-bank buying — and in the “yen carry trade” that exported the bubble to foreign assets. (c) **Demographics and expectations**: in an aging society expecting permanent stagnation, entrepreneurial judgment about long projects (Stage 6.1) tilts systematically toward caution, and credit demand itself is weak — a point Austrians should grant; it is not part of the theory but a “here and now” condition that the application must include.
+
+### ⑤ Three readings compared, what Japan teaches the West, and some honest caveats
+
+**Krugman 1998 at full strength** (“It's Baaack: Japan's Slump and the Return of the Liquidity Trap,” *Brookings Papers*): Japan's problem is not structure but **demand.** After the bubble, the desire to save so far exceeded the desire to invest that the real rate equating them was negative; the nominal floor is zero, so the real rate could not get low enough — a liquidity trap, Keynes's 1936 concept returned in modern dress. The way out is to raise expected inflation (the central bank must “credibly promise to be irresponsible”) and push the real rate negative, or to fill the demand gap directly with deficits. Bernanke's 2000 paper had a sharper title — “Japanese Monetary Policy: A Case of Self-Induced Paralysis?” — arguing the BOJ could have done far more. Abenomics in 2013 was more or less this prescription filled.
+
+What it explains well: why a zero nominal rate is not enough (a reminder for Austrians too: **zero nominal rates do not mean easy credit** if deflation is expected, since the real rate is still positive); why households and firms saving simultaneously reinforce each other. What it does not explain: why ¥100 trillion of fiscal stimulus in the 1990s produced no recovery (“not enough” must say how much would be, and why each rebound faded); why a decade of Abenomics and a monetary base multiplied several times never reached 2% inflation until the global supply shock of 2022; and most fundamentally, **why the 1980s bubble happened at all** — Krugman's model starts after the burst and does not ask where the bubble came from.
+
+**Richard Koo's “balance-sheet recession”** (from 2003): after a bubble bursts, firms' assets shrink while their debts do not; every firm switches from profit maximization to debt minimization; even at zero rates nobody borrows, everybody repays — so monetary policy fails and only fiscal policy can hold demand up. The Austrian assessment: **accurate description, flawed prescription.** Firms collectively repaying debt and repairing balance sheets is itself a form of liquidation — it should be allowed to finish as fast as possible, not dragged out by fiscal stimulus; and the reason “repairing balance sheets” took twenty years is precisely that asset prices (land above all) were propped up by policy and not allowed to fall to their floor, zombies were not allowed to die, and healthy firms never got cheap assets.
+
+**The monetarist reading**: the BOJ was too tight in the 1990s — broad money growth near zero, deflation — and Friedman advised the BOJ as early as 1997 to buy government bonds on a large scale. After Abenomics, monetarists pointed out that doubling the base did end deflation, weaken the yen and lift stocks. Austrians agree that “a deflationary spiral has its own destructive force” (Hayek's late concession, Stage 13.2), but note that Japan's deflation was mild (about −0.5% a year) and that QE's effects landed mostly on asset prices and the exchange rate — exactly what the Cantillon effect of Stage 4.3 predicts: new money reaches financial assets first and consumer goods last, or never.
+
+**What does Japan teach the West?** After 2008 everything the Fed, the ECB and the Bank of England did — zero rates, QE, bank recapitalization, forbearance on bad assets, fiscal stimulus — replayed Japan's 1990s script, and Western central bankers (Bernanke himself) explicitly framed their program as “don't repeat Japan.” The Austrian observation: the lesson the West drew was **do it faster and bigger** (Bernanke's diagnosis was that Japan was too slow and too small), while the lesson it did not draw was **where the road itself leads** — the rising zombie share in 2010s Europe, slowing productivity growth, “Japanification” as everyday vocabulary in policy circles. Stage 13.4 shows the US after 2008 borrowing Friedman (hold up the money stock) while replaying Japan (forbid liquidation); the “secular stagnation” of Stage 10.4 is, to Austrians, the Japanese disease gone global.
+
+**Honest caveats** (any good Austrian analysis of Japan must include them):
+
+- **Demographics.** Japan's working-age population peaked around 1995 and has fallen since. Real GDP per working-age person grew in 2000–2019 at a pace not far behind America's. A good part of the “lost decades” is population arithmetic, not policy failure. Austrians can say that aging raises social time preference, lowers the natural rate and weakens long-term investment — but that is a different factor from “policy blocked liquidation,” and the magnitudes must be separated.
+- **Deflation cuts both ways.** Austrians usually regard mild deflation as harmless (productivity-driven price declines are good); but Japan's deflation came with stagnant nominal wages and rising real debt burdens, a real pressure on leveraged firms and on the state. Hayek's warning about “secondary deflation” and Fisher's debt deflation are relevant here.
+- **The social cost was lower than expected.** Unemployment peaked at about 5.5%; society stayed stable, public services intact, life expectancy the world's highest. Compared with 1930s America or 2010s southern Europe, Japan's loss was **a loss of growth**, not **a collapse of life.** An Austrian should admit: if the goal was merely “avoid acute pain,” Japan's strategy partly succeeded on its own terms — at the cost of spreading the pain over thirty years and the next generation's debt.
+- **Liquidation eventually partly happened.** The bank reforms of 2002–05, the corporate-governance reforms of the 2010s, the stock market's recovery in 2024 — these show Japan was not “never liquidated” but “liquidated twenty years late.” That supports the Austrian account, but it is also a reminder: policy can delay for a very long time.
+
+The whole lesson in one sentence: **Japan is a thirty-year experiment proving that rates at zero and debt piled to the sky can spare a country the acute pain of liquidation without buying it the recovery that follows liquidation — while demographics and deflation are background variables that must be computed separately.** In the next lesson (Stage 13.4) we watch the West replay this script after 2008 — and then, in 2020, change the injection point, with a completely different result.
+`,
+
+  demo: "japan-timeline",
+
+  analogy: `
+Think of Japan as **a marathon runner who broke his leg in 1989.**
+
+Through the 1980s his coach (the Bank of Japan) doped him (a 2.5% rate and 10% money growth), he ran unbelievable times (Nikkei 38,915), and he wrecked his leg doing it (malinvestment). In 1990 the leg broke.
+
+What is the normal treatment? Set the bone, rest, let it heal, six months to a year, then train again. Painful, but with an end. That is the liquidation of Stage 5.3, and it is what America did in 1921.
+
+Japan chose: **he must not stop.** The team doctor (the Ministry of Finance) said “we can't admit the leg is broken or the sponsors will leave,” so he got painkillers (forbearance on bad loans); his family (the government) bought him crutches, a wheelchair, an electric cart (a dozen public-works packages) so he could keep “moving on the track”; the coach switched to stronger dope (ZIRP, QE, YCC) and kept it up for twenty-five years. He never did fall over — but he never ran again either. The bone healed in the wrong position (zombie firms), the muscle wasted (stagnant productivity), and the painkiller bill (public debt above 200%) went to his children.
+
+In 2002 a new doctor (Takenaka) forcibly removed some of the painkillers and reset part of the bone — it hurt for two years, and then in 2003–07 he really did run a stretch. That is the most powerful passage in the whole story for the Austrian reading: **allow a little liquidation and a little recovery appears.**
+
+Krugman sees a runner who won't run because he has lost confidence, and prescribes stronger dope and louder cheering. Koo sees a runner who is sensibly nursing his injury, and says don't rush him, push the wheelchair. Austrians see a runner who **never recovered in thirty years precisely because he was never allowed to lie down properly.**
+
+And in fairness: this runner had turned forty (an aging population). Even with an unbroken leg he would not have run the times of a twenty-year-old. When you grade the treatment, subtract that from what was “lost.”
+`,
+
+  misconceptions: [
+    "**“The lesson of Japan is that stimulus was too small and too late.”** — More than ten fiscal packages, over ¥100 trillion, public debt from 60% to over 200% of GDP, twenty-five years of zero rates, a central bank holding more than half of all government bonds — if that was “not enough,” one must say how much would be, and why every rebound faded. The Austrian reading runs the arrow the other way: stimulus blocked liquidation.",
+    "**“Twenty-five years of zero rates with no bubble proves ABCT wrong.”** — ABCT works through bank credit expansion; Japan's monetary base exploded while bank credit and broad money barely grew (impaired bank capital, firms only repaying). The transmission chain was broken. The new money did build a bubble — in government bonds (negative yields) and carry-trade assets abroad. That is application-level analysis, not a failure of theory.",
+    "**“Japan never liquidated.”** — After the bank failures of 1997–98 and the 2002–05 “Financial Revival” program forced write-offs, the zombie share fell markedly and a modest recovery followed in 2003–07. Liquidation was not absent but delayed by more than a decade — a time sequence that supports the Austrian account.",
+    "**“The lost decades were entirely policy failure.”** — Japan's working-age population peaked around 1995; growth per working-age person in the 2000s was close to America's; unemployment never passed 6% and living standards stayed very high. Population arithmetic and policy failure are separate factors, and an honest analysis computes them separately.",
+    "**“Mild deflation was harmless for Japan, so Austrians can ignore it.”** — Productivity-driven price declines are good, but Japan's deflation came with stagnant nominal wages and rising real debt burdens, a genuine pressure on leveraged firms and the state. Hayek late in life conceded the damage of “secondary deflation”; Austrian analysis should distinguish good deflation from debt deflation.",
+  ],
+
+  quiz: [
+    {
+      q: "What directly triggered Japan's credit expansion of 1985–89?",
+      options: [
+        "The government cut rates to win an election",
+        "After the Plaza Accord the yen soared, and the BOJ cut the discount rate to 2.5% and held it for over two years to offset the damage to exporters",
+        "The US demanded Japan import more",
+        "The BOJ wanted to create inflation",
+      ],
+      answer: 1,
+      explain: "The yen went from about 240 to about 120 per dollar; exporters pressed the BOJ, which cut to a then-record 2.5% in February 1987 and held it until May 1989, with broad money growing about 10% a year.",
+    },
+    {
+      q: "What is the most important contribution of Caballero, Hoshi and Kashyap (2008) on “zombie firms” to the Austrian account of Japan?",
+      options: [
+        "They proved the BOJ was too tight",
+        "Using firm-level data they showed banks systematically evergreened loans to insolvent firms, and that healthy firms invested and hired less in zombie-heavy industries — micro evidence of blocked liquidation",
+        "They proved fiscal stimulus was too small",
+        "They proved demographics were the sole cause",
+      ],
+      answer: 1,
+      explain: "Mainstream empirical work that happens to supply the micro evidence for “blocked liquidation locks resources and crowds out healthy firms” — the mechanism of Stage 10.4, documented.",
+    },
+    {
+      q: "How do Austrians answer the counter-evidence that twenty-five years of zero rates produced no new bubble in Japan?",
+      options: [
+        "By denying Japan had zero rates",
+        "By conceding ABCT failed in Japan",
+        "By noting ABCT transmits through bank credit, which barely grew in Japan (broken chain), and that the new money did build a bubble — in government bonds and foreign carry-trade assets",
+        "By blaming demographics alone",
+      ],
+      answer: 2,
+      explain: "Base money is not credit. With impaired bank capital and firms only repaying, broad money barely grew; the new money propped up negative-yielding bonds and the yen carry trade. Application-level analysis, the same logic as America 2010–19 in Stage 13.4.",
+    },
+    {
+      q: "What question is hardest for Krugman's 1998 liquidity-trap explanation?",
+      options: [
+        "Why nominal rates cannot go negative",
+        "Why the 1980s bubble happened at all, and why ¥100 trillion of stimulus and a multiplied monetary base never produced a lasting recovery",
+        "Why the yen appreciated",
+        "Why Japan's saving rate was high",
+      ],
+      answer: 1,
+      explain: "Krugman's model begins after the bubble burst and does not ask where the bubble came from; “not enough” must say how much would be, why each rebound faded, and why a decade of Abenomics never reached its 2% target.",
+    },
+    {
+      q: "Which of the following is NOT one of the caveats an honest Austrian analysis of Japan must include?",
+      options: [
+        "The working-age population fell after 1995, and growth per working-age person was not bad",
+        "Japan's deflation came with rising real debt burdens and had real costs",
+        "Japan's strategy did avoid a 1930s-style social collapse",
+        "Japan never liquidated anything, so the Austrians were entirely right",
+      ],
+      answer: 3,
+      explain: "Partial liquidation did occur in 1997–98 and 2002–05 and was followed by recovery — support for the Austrian account, but “never liquidated” is false. The other three are background factors that must be included.",
+    },
+  ],
+
+  further: [
+    { label: "Powell, “Explaining Japan's Recession” (QJAE, 2002) — the full Austrian account of the Japanese case", url: "https://mises.org/library/explaining-japans-recession" },
+    { label: "Caballero, Hoshi & Kashyap, “Zombie Lending and Depressed Restructuring in Japan” (AER, 2008) — the micro evidence on zombies", url: "https://www.aeaweb.org/articles?id=10.1257/aer.98.5.1943" },
+    { label: "Krugman, “It's Baaack: Japan's Slump and the Return of the Liquidity Trap” (Brookings Papers, 1998) — the strongest Keynesian statement", url: "https://www.brookings.edu/articles/its-baaack-japans-slump-and-the-return-of-the-liquidity-trap/" },
+    { label: "Hoshi & Kashyap, “Japan's Financial Crisis and Economic Stagnation” (JEP, 2004) — the banking system and regulatory forbearance surveyed", url: "https://www.aeaweb.org/articles?id=10.1257/089533004773563412" },
+    { label: "Bank of Japan: monetary-policy history and decision archive (official source)", url: "https://www.boj.or.jp/en/mopo/index.htm" },
+  ],
+};
