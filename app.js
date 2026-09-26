@@ -2,11 +2,11 @@
 // Lessons are Markdown: content/lessons/zh/<id>.md and content/lessons/en/<id>.md (format: AUTHORING.md).
 // This file only renders; all course content lives in content/ and demos/. UI strings use t(zh, en).
 
-import { COURSE } from "./content/manifest.js?v=2";
-import { GLOSSARY } from "./content/glossary.js?v=2";
+import { COURSE } from "./content/manifest.js?v=4";
+import { GLOSSARY } from "./content/glossary.js?v=4";
 import { tex } from "./math.js?v=1";
 
-const V = "1"; // content version: bump after editing lessons/ or demos/ (busts the cache for fetch/import)
+const V = "4"; // content version: bump after editing lessons/ or demos/ (busts the cache for fetch/import)
 const PKEY = "austrian-path-v2";
 const OLD_PKEY = "austrian-path-v1"; // v1 UI: carry progress over once
 
