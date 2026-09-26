@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/logo.svg" width="84" alt="Droplet Labs logo" />
+<img src="assets/logo-horizontal-dark-t.png" width="260" alt="Droplet Labs" />
 
 # Droplet Labs · 奥派之路 / Austrian Path
 
@@ -26,7 +26,8 @@
 - **Mastery**: reading the canon (Menger, *Human Action*, Hayek's arc, Rothbard, the contemporary classics) · applied history (the Great Depression, Japan, 2008/QE/2021–23, reading the Fed, China's credit cycle) · the economist's toolkit (five-step policy analysis, writing, internal debates, common Austrian mistakes, career paths, cheat sheet).
 - **The New Economy through Austrian eyes**: network effects and platforms · zero-marginal-cost pricing · data vs knowledge · the attention economy, algorithms and spontaneous order, the creator economy, platform governance, memes and reflexivity · Bitcoin and the regression theorem, hard money, stablecoins and CBDCs, DeFi as codified order, cycles under a Bitcoin standard · AI and the calculation debate, AI as a capital good, entrepreneurial judgment vs computation, technological unemployment, the AI capex boom and ABCT, agent economies.
 - **Stage ∞**: open problems, your opportunities, and a capstone — write an Austrian analysis by hand.
-- A fixed lesson template — **Intuition → Mechanics → Demo → Analogy → Misconceptions → Quiz → Further reading** — to keep cognitive load low.
+- A fixed lesson template — **Intuition → Mechanics → Demo → Analogy → Misconceptions → Quiz → Further reading** — to keep cognitive load low, with an "intuition only" reading mode, an on-page table of contents and hover cards for 260+ glossary terms.
+- **Real formulas**: every worked calculation and equation is typeset with KaTeX (vendored, works offline) — present values, supply and demand, the equation of exchange, balance sheets.
 - Hand-drawn **inline SVG** diagrams for the hard ideas; many demos **compute for real** (marginal-utility tables, marginal-pair pricing, Hayekian triangles, credit-expansion cycle simulators, Cantillon tracers, planner-vs-market sandboxes).
 - **Bilingual** 中文 / English (toggle in the UI). Progress lives only in your browser (`localStorage`). Filter lessons by persona (Investor / Builder / Scholar / Curious).
 - **Fair but committed**: an Austrian course with a clear point of view that steelmans its opponents and is candid about the school's own weak spots.
@@ -47,17 +48,19 @@ Then open **http://localhost:8786/**.
 ### Project layout
 | Path | What it is |
 | --- | --- |
-| `index.html`, `app.js`, `styles.css` | The shell + renderer (vanilla JS) |
+| `index.html`, `app.js`, `styles.css` | The shell + Markdown renderer (vanilla JS), in the Droplet Labs design language shared with the sister paths |
+| `math.js`, `vendor/katex/` | Formula typesetting (KaTeX, vendored) used by the app and the checker |
 | `content/manifest.js` | The course map (tiers, stages, lessons, personas) |
 | `content/glossary.js` | Bilingual glossary that auto-links in every lesson |
-| `content/lessons/stageX-*.js` | Chinese lesson content — one file per lesson |
-| `content/lessons/en/` | English lesson content — same filenames |
+| `content/lessons/zh/<id>.md` | Chinese lessons — one Markdown file per lesson |
+| `content/lessons/en/<id>.md` | English lessons — same ids |
 | `demos/*.js` | One interactive demo per lesson (bilingual); `_chart.js` is the shared chart engine |
 | `AUTHORING.md` | How to write a lesson/demo in this format |
-| `assets/` | Logo and static assets |
+| `tools/check.mjs` | Validator: structure, links, quiz, and every formula type-checked with KaTeX (`node tools/check.mjs`) |
+| `assets/` | Droplet Labs logos and icons |
 
 ### Tech
-Plain HTML/CSS/JavaScript — no framework, no bundler, no npm. Content loads on demand via native ES modules. Works fully offline after the first load.
+Plain HTML/CSS/JavaScript — no framework, no bundler, no npm. Lessons are Markdown fetched on demand and rendered in the browser; formulas use a vendored KaTeX. Works fully offline after the first load (the web fonts are the only external request).
 
 ---
 
@@ -73,7 +76,8 @@ Plain HTML/CSS/JavaScript — no framework, no bundler, no npm. Content loads on
 - **精通层**：读原著（门格尔、《人的行动》、哈耶克的弧线、罗斯巴德、当代经典）· 用奥派解释历史（大萧条、日本、2008/QE/2021–23 通胀、读懂美联储、中国的信用周期）· 经济学家的工具箱（五步政策分析法、写作、内部分歧、常见奥派错误、职业路径、速查表）。
 - **新经济时代 · 奥派应用**：网络效应与平台 · 零边际成本定价 · 数据 vs 知识 · 注意力经济、算法与自发秩序、创作者经济、平台治理、迷因与反身性 · 比特币与回归定理、硬钱、稳定币与 CBDC、DeFi 作为代码化的秩序、比特币标准下的周期 · AI 与计算争论、AI 作为资本品、企业家判断 vs 计算、技术性失业、AI 资本开支狂潮与 ABCT、代理人经济。
 - **阶段 ∞**：未解问题、你的机会，以及毕业设计——亲手写一篇奥派分析。
-- 固定课模板——**直觉 → 原理 → 演示 → 类比 → 常见误解 → 自测 → 延伸**——把认知负担降到最低。
+- 固定课模板——**直觉 → 原理 → 演示 → 类比 → 常见误解 → 自测 → 延伸**——把认知负担降到最低；支持“只看直觉版”、页内目录，260 多个术语自动加悬浮释义卡。
+- **真正的公式**：每一处计算与方程都用 KaTeX 排版（已随仓库附带，离线可用）——现值、供给与需求、交易方程、资产负债表。
 - 难点配**手绘内联 SVG** 图；很多演示**真算**（边际效用表、边际对定价、哈耶克三角、信用扩张周期模拟、坎蒂隆追踪、计划者 vs 市场沙盘）。
 - **双语** 中文 / English（界面内切换）。进度只存在你自己的浏览器（`localStorage`）。可按学习目标（投资者 / 创业者·开发者 / 学者·学生 / 好奇者）过滤课程。
 - **公平但有立场**：这是一门奥派课程，立场清楚；对手先陈述最强版本再回应，对奥派自己的软肋直言不讳。
@@ -92,7 +96,7 @@ python -m http.server 8786
 然后打开 **http://localhost:8786/**。
 
 ### 技术
-纯 HTML/CSS/JavaScript——无框架、无打包、无 npm。内容用原生 ES 模块按需加载；首次加载后可完全离线使用。
+纯 HTML/CSS/JavaScript——无框架、无打包、无 npm。课文是 Markdown，按需加载并在浏览器里渲染；公式用随仓库附带的 KaTeX。首次加载后可完全离线使用（只有网页字体来自外部）。
 
 ---
 

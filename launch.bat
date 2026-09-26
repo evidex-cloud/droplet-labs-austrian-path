@@ -1,8 +1,8 @@
 @echo off
 REM Droplet Labs · 奥派之路 · Austrian Path —— 本地启动
 REM 用本地服务器打开（不要直接双击 index.html）：
-REM   1) 浏览器内的交互演示需要 crypto.subtle，file:// 下不可用，http://localhost 才行
-REM   2) 课程内容是按需 import 的，也需要服务器
+REM   1) 课文是按需 fetch 的 Markdown，file:// 下不可用，http://localhost 才行
+REM   2) 交互演示是按需 import 的 ES 模块，也需要服务器
 chcp 65001 >nul
 cd /d "%~dp0"
 echo.

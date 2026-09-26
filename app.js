@@ -1,185 +1,330 @@
-// Droplet Labs · 奥派之路 · Austrian Path —— 渲染器（双语 + 难度 + persona）
-// 内容在 content/ 下；中文正文 stageX-id.js，英文正文 content/lessons/en/ 同名文件。
-// UI 文案用 t(中,英)。难度 1/2/3 与 persona 标签在 manifest 里。
+// Droplet Labs · 奥派之路 · Austrian Path — renderer (v2 UI, 2026-09: Droplet Labs brand language, KaTeX formulas, Markdown lessons)
+// Lessons are Markdown: content/lessons/zh/<id>.md and content/lessons/en/<id>.md (format: AUTHORING.md).
+// This file only renders; all course content lives in content/ and demos/. UI strings use t(zh, en).
 
-import { COURSE } from "./content/manifest.js?v=3"; // 改了 manifest 要随 app.js?v 一起 bump，破缓存
-import { GLOSSARY } from "./content/glossary.js?v=3"; // 知识小卡片术语表；改它要 bump 这里的 ?v 与 app.js?v
+import { COURSE } from "./content/manifest.js?v=2";
+import { GLOSSARY } from "./content/glossary.js?v=2";
+import { tex } from "./math.js?v=1";
 
+const V = "1"; // content version: bump after editing lessons/ or demos/ (busts the cache for fetch/import)
+const PKEY = "austrian-path-v2";
+const OLD_PKEY = "austrian-path-v1"; // v1 UI: carry progress over once
+
+const LOGO_H = "assets/logo-horizontal-dark-t.png";
+const LOGO_S = "assets/logo-stacked-dark-t.png";
+const MARK = "assets/mark-accent.svg";
+const LINKS = { site: "https://dropletlabs.xyz/", paths: "https://evidex-cloud.github.io/" };
 const app = document.getElementById("app");
-const PKEY = "austrian-path-v1";
-const V = "3"; // 内容版本：改了 lessons/ 或 demos/ 后 +1，破除浏览器对动态 import 的缓存
 
-// 品牌 Logo —— 水滴 + 电路 + 区块，内联 SVG（无背景、随标题字号缩放、可独立核验地嵌入页面）
-const LOGO = `<svg class="hd-logo-svg" viewBox="0 0 100 118" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Droplet Labs"><defs><linearGradient id="dropletGrad" x1="22" y1="12" x2="80" y2="104" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#264a6e"/><stop offset=".55" stop-color="#3f74a6"/><stop offset="1" stop-color="#6ea3cf"/></linearGradient></defs><path d="M50 10C31 39 18 55 18 74c0 19 15 31 32 31s32-12 32-31C82 55 69 39 50 10Z" stroke="url(#dropletGrad)" stroke-width="3.4" stroke-linejoin="round"/><path d="M45 62 36 51 36 44M50 59V46M57 61 65 52" stroke="url(#dropletGrad)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="36" cy="42" r="2.7" fill="url(#dropletGrad)"/><circle cx="50" cy="43" r="2.7" fill="url(#dropletGrad)"/><circle cx="67" cy="50" r="2.7" fill="url(#dropletGrad)"/><path d="M47 62 58 68 58 80 47 86 36 80 36 68Z" stroke="url(#dropletGrad)" stroke-width="2.2" stroke-linejoin="round"/><path d="M36 68 47 74 58 68M47 86V74" stroke="url(#dropletGrad)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/><path d="M64 45 66.4 50.2 72 52 66.4 53.8 64 59 61.6 53.8 56 52 61.6 50.2Z" fill="url(#dropletGrad)"/><path d="M32 92c9 7 27 7 36 0M36 98c7 4 21 4 28 0" stroke="url(#dropletGrad)" stroke-width="2.2" stroke-linecap="round"/></svg>`;
-
-/* ---------------- 状态 ---------------- */
+/* ---------------- state ---------------- */
 function loadState() {
+  const base = { done: {}, quiz: {}, goal: null, lang: "zh", brief: false };
   try {
-    return Object.assign({ done: {}, goal: null, lang: "zh" }, JSON.parse(localStorage.getItem(PKEY)) || {});
-  } catch {
-    return { done: {}, goal: null, lang: "zh" };
-  }
+    const cur = JSON.parse(localStorage.getItem(PKEY));
+    if (cur) return Object.assign(base, cur);
+    const old = JSON.parse(localStorage.getItem(OLD_PKEY));
+    if (old) return Object.assign(base, { done: old.done || {}, goal: old.goal || null, lang: old.lang || "zh" });
+  } catch { /* private mode */ }
+  return base;
 }
-function saveState(s) { localStorage.setItem(PKEY, JSON.stringify(s)); }
+function saveState(s) { try { localStorage.setItem(PKEY, JSON.stringify(s)); } catch { /* private mode */ } }
 let state = loadState();
+if (!state.quiz) state.quiz = {};
+try { const ql = new URLSearchParams(location.search).get("lang"); if (ql === "en" || ql === "zh") { state.lang = ql; saveState(state); } } catch { /* */ }
 
-/* ---------------- i18n 助手 ---------------- */
-const lang = () => state.lang === "en" ? "en" : "zh";
+/* ---------------- i18n ---------------- */
+const lang = () => (state.lang === "en" ? "en" : "zh");
 const t = (zh, en) => (lang() === "en" ? en : zh);
 const L = (o, k) => (lang() === "en" && o[k + "En"] != null ? o[k + "En"] : o[k]);
-const enModulePath = (m) => m.replace("./content/lessons/", "./content/lessons/en/");
-
 const DIFF = { 1: ["基础", "Basic"], 2: ["进阶", "Intermediate"], 3: ["高级", "Advanced"] };
 const diffLabel = (d) => t(DIFF[d][0], DIFF[d][1]);
-const stars = (d) => `<span class="stars" title="${diffLabel(d)}">${"★".repeat(d)}<span class="off">${"★".repeat(3 - d)}</span></span>`;
+const stars = (d) => `<span class="stars" title="${diffLabel(d)}" aria-label="${diffLabel(d)}">${[1, 2, 3].map((i) => `<i class="${i <= d ? "" : "off"}"></i>`).join("")}</span>`;
 
-/* ---------------- 工具 ---------------- */
-const tierOf = (id) => COURSE.tiers.find((t) => t.id === id);
-const readyLessons = () => COURSE.stages.flatMap((s) => s.lessons).filter((l) => l.status === "ready");
-const findLesson = (id) => {
-  for (const s of COURSE.stages) {
-    const l = s.lessons.find((x) => x.id === id);
-    if (l) return { lesson: l, stage: s };
-  }
-  return null;
-};
+/* ---------------- course helpers ---------------- */
+const tierOf = (id) => COURSE.tiers.find((x) => x.id === id);
+const allLessons = () => COURSE.stages.flatMap((s) => s.lessons);
+const DEMO_COUNT = COURSE.demos || 0;
+const STAGE_N = COURSE.stages.filter((s) => typeof s.n === "number").length;
+const LESSON_INDEX = new Map();
+COURSE.stages.forEach((s) => s.lessons.forEach((l, i) => LESSON_INDEX.set(l.id, { lesson: l, stage: s, index: i, num: `${s.n}.${i + 1}` })));
+const findLesson = (id) => LESSON_INDEX.get(id) || null;
 const relevant = (lesson) => !state.goal || (lesson.personas || []).includes(state.goal);
+const doneCount = (list) => list.filter((l) => state.done[l.id]).length;
+const escHTML = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const escAttr = escHTML;
+const host = (u) => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch { return ""; } };
 
-/* ---------------- 极简 Markdown ---------------- */
-function esc(s) { return s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c])); }
-function inline(s) {
-  return esc(s)
-    .replace(/`([^`]+)`/g, "<code>$1</code>")
-    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+/* ---------------- Markdown ---------------- */
+// Inline: protect code, math \( … \) and [[links]] first, then Markdown, then restore.
+function inline(src) {
+  if (!src) return "";
+  const store = [];
+  const keep = (html) => `\u0000${store.push(html) - 1}\u0000`;
+  let s = src;
+  s = s.replace(/`([^`]+)`/g, (_, c) => keep(`<code>${escHTML(c)}</code>`));
+  s = s.replace(/\\\(([\s\S]+?)\\\)/g, (_, m) => keep(tex(m.trim(), false)));
+  s = s.replace(/\[\[([a-z0-9-]+)(?:\|([^\]]+))?\]\]/g, (_, id, text) => keep(xrefLink(id, text)));
+  s = s.replace(/\\\$/g, "$"); // an escaped dollar outside math is just a dollar sign
+  s = escHTML(s);
+  s = s.replace(/&lt;(\/?)(sub|sup|kbd|br|mark|small)\s*\/?&gt;/g, "<$1$2>");
+  s = s.replace(/\[([^\]]+)\]\(((?:[^()\s]|\([^()\s]*\))+)\)/g, (_, text, url) =>
+    /^#/.test(url) ? `<a href="${url}">${text}</a>` : `<a href="${url}" target="_blank" rel="noopener">${text}</a>`);
+  s = s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  s = s.replace(/(^|[^*\w])\*(?!\s)(.+?)(?<!\s)\*(?!\*)/g, "$1<em>$2</em>");
+  for (let k = 0; k < 3 && /\u0000\d+\u0000/.test(s); k++) s = s.replace(/\u0000(\d+)\u0000/g, (_, i) => store[+i]);
+  return s;
 }
+function xrefLink(id, text) {
+  const hit = findLesson(id);
+  if (!hit) return `<span class="xref-missing" title="missing lesson: ${escAttr(id)}">${escHTML(text || id)}</span>`;
+  const tip = `${t("阶段", "Stage")} ${hit.num} · ${escAttr(L(hit.lesson, "title"))}`;
+  // [[id|阶段 3.3]] — the text already names the stage: keep it compact (title on hover); [[id]] — number chip + title
+  if (text) return `<a class="xref xref-t" href="#lesson/${id}" title="${tip}">${inline(text)}</a>`;
+  return `<a class="xref" href="#lesson/${id}" title="${tip}"><span class="xref-num">${hit.num}</span>${escHTML(L(hit.lesson, "title"))}</a>`;
+}
+
+const CALLOUTS = {
+  key:     ["key", "核心结论", "Key idea"],
+  example: ["calc", "算一算", "Worked example"],
+  think:   ["think", "想一想", "Think first"],
+  recall:  ["recall", "回顾", "Recall"],
+  warn:    ["warn", "注意", "Watch out"],
+  history: ["history", "历史", "History"],
+  deep:    ["deep", "深挖一层", "Going deeper"],
+  fact:    ["fact", "最新现状", "State of play"],
+  kai:     ["kai", "小凯的交易", "Kai's trade"],
+  formula: ["formula", "公式卡", "Formula card"],
+};
+const CALLOUT_ICON = {
+  key: `<path d="M8 7a3 3 0 1 1 2.8 3H10l-1 1H8v1H7v1H5v-2l3.2-3.2A3 3 0 0 1 8 7Z"/><circle cx="11" cy="6" r=".8"/>`,
+  calc: `<rect x="3.5" y="2.5" width="9" height="11" rx="1.6"/><path d="M5.5 5h5M5.5 8h1M8 8h1M10.4 8h.1M5.5 10.5h1M8 10.5h1M10.4 10.5h.1"/>`,
+  think: `<path d="M8 2.5a4 4 0 0 0-2.3 7.3V11h4.6V9.8A4 4 0 0 0 8 2.5ZM6.3 13h3.4"/>`,
+  recall: `<path d="M3.5 8a4.5 4.5 0 1 0 1.3-3.2M3.5 3v2.5H6"/>`,
+  warn: `<path d="M8 2.8 14 13H2L8 2.8ZM8 6.5v3M8 11.3v.1"/>`,
+  history: `<path d="M4 2.5h7.5v11H4a1.5 1.5 0 0 1 0-3h7.5M6.5 5.5h3"/>`,
+  deep: `<circle cx="7" cy="7" r="4"/><path d="m10 10 3.5 3.5M5.5 7h3M7 5.5v3"/>`,
+  fact: `<path d="M8 13.5s4.5-4 4.5-7.2a4.5 4.5 0 0 0-9 0C3.5 9.5 8 13.5 8 13.5Z"/><circle cx="8" cy="6.3" r="1.5"/>`,
+  kai: `<circle cx="8" cy="5.5" r="2.6"/><path d="M3 13.5c.6-2.6 2.6-4 5-4s4.4 1.4 5 4"/>`,
+  formula: `<path d="M11.5 3H5l3.5 5L5 13h6.5"/>`,
+};
+const icon = (k) => `<svg class="ci" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${CALLOUT_ICON[k] || ""}</svg>`;
+
+const HTML_BLOCK = /^<(figure|svg|div|table|details|aside)\b/i;
+const LIST_RE = /^(\s*)([-*+]|\d+[.)])\s+(.*)$/;
+
 function md(text) {
   if (!text) return "";
-  return text.trim().split(/\n\s*\n/).map((block) => {
-    const b = block.trim();
-    if (b.startsWith("<svg") || b.startsWith("<figure") || b.startsWith("<table")) return b; // 原样透传内联图示（SVG / figure / 表格），不转义
-    if (b.startsWith("### ")) return `<h4 class="subhead">${inline(b.slice(4))}</h4>`;
-    if (b.startsWith("$$")) {
-      // 公式块：逐行用 <br> 连接，仅转义、不做行内 markdown（避免公式里的 * 被当成加粗）；首尾的 $$ 行去掉
-      const lines = b.split("\n").map((l) => l.replace(/^\$\$\s?/, "").replace(/\s?\$\$$/, ""));
-      while (lines.length && !lines[0].trim()) lines.shift();
-      while (lines.length && !lines[lines.length - 1].trim()) lines.pop();
-      return `<div class="formula">${lines.map(esc).join("<br>")}</div>`;
+  const lines = text.replace(/\r\n?/g, "\n").split("\n");
+  let i = 0, out = "";
+  const isBlank = (l) => !l || !l.trim();
+  const startsBlock = (l) => /^(#{2,4}\s|```|\$\$|>|\||::demo\[)/.test(l.trim()) || HTML_BLOCK.test(l.trim()) || LIST_RE.test(l);
+  while (i < lines.length) {
+    const line = lines[i], tl = line.trim();
+    if (isBlank(line)) { i++; continue; }
+    if (tl.startsWith("```")) { // fenced code
+      const langTag = tl.slice(3).trim(); const buf = []; i++;
+      while (i < lines.length && !lines[i].trim().startsWith("```")) buf.push(lines[i++]);
+      i++;
+      out += `<pre class="code"${langTag ? ` data-lang="${escAttr(langTag)}"` : ""}><code>${escHTML(buf.join("\n"))}</code></pre>`;
+      continue;
     }
-    if (b.startsWith("- ")) {
-      const items = b.split("\n").map((l) => `<li>${inline(l.replace(/^-\s+/, ""))}</li>`).join("");
-      return `<ul>${items}</ul>`;
+    if (tl.startsWith("$$")) { // display math, may span lines
+      let body = tl.slice(2);
+      if (body.trim().endsWith("$$") && body.trim().length >= 2) { body = body.trim().slice(0, -2); i++; }
+      else {
+        const buf = [body]; i++;
+        while (i < lines.length && !lines[i].trim().endsWith("$$")) buf.push(lines[i++]);
+        if (i < lines.length) { buf.push(lines[i].trim().slice(0, -2)); i++; }
+        body = buf.join("\n");
+      }
+      out += `<div class="formula">${tex(body.trim(), true)}</div>`;
+      continue;
     }
-    if (b.startsWith("> ")) return `<blockquote>${inline(b.replace(/^>\s?/gm, ""))}</blockquote>`;
-    return `<p>${inline(b)}</p>`;
-  }).join("");
-}
-
-/* ---------------- 知识小卡片 + 课间交叉链接（渲染后装饰 DOM，不改课文） ---------------- */
-const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-// 阶段引用映射：键 "10.5"(= 阶段号 . 该阶段第几节) → lessonId；键 "10" → 该阶段第一节 ready 课
-const XREF = (() => {
-  const exact = new Map(), stageFirst = new Map();
-  for (const s of COURSE.stages) {
-    const sn = String(s.n);
-    s.lessons.forEach((l, i) => {
-      if (l.status !== "ready") return;
-      exact.set(sn + "." + (i + 1), l.id);
-      if (!stageFirst.has(sn)) stageFirst.set(sn, l.id);
-    });
+    const dm = tl.match(/^::demo\[([a-z0-9-]+)\]$/);
+    if (dm) { out += `<div class="inline-demo" data-demo="${dm[1]}"></div>`; i++; continue; }
+    const hm = tl.match(HTML_BLOCK);
+    if (hm) { // raw HTML block, passed through until its tag closes
+      const tag = hm[1].toLowerCase(); const buf = []; let depth = 0;
+      const openRe = new RegExp(`<${tag}\\b`, "gi"), closeRe = new RegExp(`</${tag}>`, "gi");
+      do { const l = lines[i]; depth += (l.match(openRe) || []).length - (l.match(closeRe) || []).length; buf.push(l); i++; } while (i < lines.length && depth > 0);
+      out += processRawHTML(buf.join("\n"));
+      continue;
+    }
+    const h = tl.match(/^(#{2,4})\s+(.*)$/);
+    if (h) {
+      const lvl = h[1].length, txt = h[2];
+      const tag = lvl === 2 ? "h3" : lvl === 3 ? "h3" : "h4";
+      out += `<${tag} class="subhead lvl${lvl}" id="s-${slugify(txt)}">${inline(txt)}</${tag}>`;
+      i++; continue;
+    }
+    if (tl.startsWith(">")) { // blockquote / callout
+      const buf = [];
+      while (i < lines.length && lines[i].trim().startsWith(">")) buf.push(lines[i++].trim().replace(/^>\s?/, ""));
+      const cm = buf[0].match(/^\[!(\w+)\]\s*(.*)$/);
+      if (cm && CALLOUTS[cm[1].toLowerCase()]) {
+        const type = cm[1].toLowerCase(), [ic, zh, en] = CALLOUTS[type];
+        const title = cm[2] ? inline(cm[2]) : t(zh, en);
+        const body = buf.slice(1);
+        if (type === "think") {
+          const sep = body.findIndex((l) => /^-{3,}$/.test(l.trim()));
+          const qq = sep >= 0 ? body.slice(0, sep) : body, a = sep >= 0 ? body.slice(sep + 1) : [];
+          out += `<div class="callout callout-think"><div class="callout-title">${icon(ic)}<span>${title}</span></div>${md(qq.join("\n"))}` +
+            (a.length ? `<details class="reveal"><summary>${t("想好了？点开看答案", "Got an answer? Reveal")}</summary><div class="reveal-body">${md(a.join("\n"))}</div></details>` : "") + `</div>`;
+        } else out += `<div class="callout callout-${type}"><div class="callout-title">${icon(ic)}<span>${title}</span></div>${md(body.join("\n"))}</div>`;
+      } else out += `<blockquote>${md(buf.join("\n"))}</blockquote>`;
+      continue;
+    }
+    if (tl.startsWith("|") && i + 1 < lines.length && /^\|?\s*:?-{2,}/.test(lines[i + 1].trim())) { // GFM table
+      const rows = [];
+      while (i < lines.length && lines[i].trim().startsWith("|")) rows.push(lines[i++].trim());
+      const split = (r) => r.replace(/^\|/, "").replace(/\|$/, "").split(/(?<!\\)\|/).map((c) => c.trim().replace(/\\\|/g, "|"));
+      const head = split(rows[0]), aligns = split(rows[1]).map((c) => (/^:-+:$/.test(c) ? "center" : /-+:$/.test(c) ? "right" : ""));
+      const th = head.map((c, k) => `<th${aligns[k] ? ` style="text-align:${aligns[k]}"` : ""}>${inline(c)}</th>`).join("");
+      const body = rows.slice(2).map((r) => `<tr>${split(r).map((c, k) => `<td${aligns[k] ? ` style="text-align:${aligns[k]}"` : ""}>${inline(c)}</td>`).join("")}</tr>`).join("");
+      out += `<div class="table-wrap"><table><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>`;
+      continue;
+    }
+    if (LIST_RE.test(line)) { // lists (one nested level)
+      const buf = [];
+      while (i < lines.length) {
+        const l = lines[i];
+        if (isBlank(l)) { if (i + 1 < lines.length && (LIST_RE.test(lines[i + 1]) || /^\s{2,}\S/.test(lines[i + 1]))) { buf.push(""); i++; continue; } break; }
+        if (!LIST_RE.test(l) && !/^\s{2,}\S/.test(l) && buf.length && startsBlock(l)) break;
+        buf.push(l); i++;
+      }
+      out += renderList(buf);
+      continue;
+    }
+    const buf = []; // paragraph
+    while (i < lines.length && !isBlank(lines[i]) && !(buf.length && startsBlock(lines[i]))) buf.push(lines[i++].trim());
+    out += `<p>${inline(buf.join(" "))}</p>`;
   }
-  return { exact, stageFirst };
-})();
-
-// 装饰时要跳过的子树（图示 / 代码 / 已有链接 / 演示 / 已装饰处等）
-const SKIP_SEL = "svg,figure,code,a,button,table,h1,.breadcrumb,.lsn-tag,.lsn-nav,.gloss,.xref,#demo-mount";
-function notSkipped(node, root) {
-  const p = node.parentElement;
-  if (!p) return false;
-  const hit = p.closest(SKIP_SEL);
-  return !(hit && root.contains(hit));
-}
-function textNodesIn(root) {
-  const out = [], w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-  let n; while ((n = w.nextNode())) if (n.nodeValue.trim() && notSkipped(n, root)) out.push(n);
   return out;
 }
-
-// 把一个文本节点里所有命中处替换成元素；makeEl 返回 null = 不替换（保留原文）。仅当至少替换一处才动 DOM。
-function replaceIn(node, re, makeEl) {
-  const text = node.nodeValue;
-  const parts = []; let last = 0, any = false, m; re.lastIndex = 0;
-  while ((m = re.exec(text))) {
-    const el = makeEl(m);
-    if (el) {
-      if (m.index > last) parts.push(text.slice(last, m.index));
-      parts.push(el); any = true; last = m.index + m[0].length;
-    }
-    if (re.lastIndex === m.index) re.lastIndex++;
+function renderList(lines) {
+  const items = []; let cur = null;
+  const baseIndent = Math.min(...lines.filter((l) => LIST_RE.test(l)).map((l) => l.match(/^\s*/)[0].length));
+  let ordered = false;
+  for (const l of lines) {
+    const m = l.match(LIST_RE);
+    if (m && m[1].length === baseIndent) { if (cur === null) ordered = /\d/.test(m[2]); cur = { first: m[3], rest: [] }; items.push(cur); }
+    else if (cur) cur.rest.push(l.slice(Math.min(baseIndent + 2, l.match(/^\s*/)[0].length)));
   }
-  if (!any) return;
-  if (last < text.length) parts.push(text.slice(last));
-  const frag = document.createDocumentFragment();
-  parts.forEach((p) => frag.append(p));
-  node.parentNode.replaceChild(frag, node);
+  const tag = ordered ? "ol" : "ul";
+  return `<${tag}>${items.map((it) => `<li>${inline(it.first)}${it.rest.filter((x) => x.trim()).length ? md(it.rest.join("\n")) : ""}</li>`).join("")}</${tag}>`;
+}
+// Raw HTML blocks (figures, tables): typeset \( … \) and inline Markdown inside captions and cells; never touch <svg> internals.
+function processRawHTML(html) {
+  const parts = html.split(/(<svg[\s\S]*?<\/svg>)/);
+  return parts.map((p) => {
+    if (p.startsWith("<svg")) return p;
+    // typeset math first (so a "<" inside \( … \) can't split the text run), then Markdown in captions and cells
+    const math = [];
+    const hold = (html) => `\u0001${math.push(html) - 1}\u0001`;
+    const q = p.replace(/\$\$([\s\S]+?)\$\$/g, (_, m) => hold(`<div class="formula">${tex(m.trim(), true)}</div>`))
+      .replace(/\\\(([\s\S]+?)\\\)/g, (_, m) => hold(tex(m.trim(), false)))
+      .replace(/(<(?:figcaption|td|th|li|p|span|div|b|strong)[^>]*>)([^<]+)/g, (all, open, txt) => (/\[\[|\*\*|`/.test(txt) ? open + inline(txt.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&")) : all));
+    return q.replace(/\u0001(\d+)\u0001/g, (_, i) => math[+i]);
+  }).join("");
+}
+function slugify(s) { return s.toLowerCase().replace(/\\\(.*?\\\)/g, "").replace(/[`*\\{}()[\]]/g, "").replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-|-$/g, "").slice(0, 60) || "h"; }
+
+/* ---------------- lesson file parser ---------------- */
+function parseLesson(src) {
+  src = src.replace(/\r\n?/g, "\n").replace(/^﻿/, "");
+  const meta = {};
+  const fm = src.match(/^---\n([\s\S]*?)\n---\n/);
+  if (fm) { for (const line of fm[1].split("\n")) { const m = line.match(/^(\w+):\s*(.*)$/); if (m) meta[m[1]] = m[2].trim(); } src = src.slice(fm[0].length); }
+  const tm = src.match(/^#\s+(.+)$/m);
+  const parts = src.split(/^##\s+@(\w+)\s*$/m);
+  const sections = {};
+  for (let k = 1; k < parts.length; k += 2) sections[parts[k].toLowerCase()] = parts[k + 1].trim();
+  return { meta, title: tm ? tm[1].trim() : "", sections };
+}
+function parseQuiz(text) {
+  const qs = []; let cur = null;
+  for (const raw of (text || "").split("\n")) {
+    const l = raw.trim(); if (!l) continue; let m;
+    if ((m = l.match(/^\d+[.)]\s+(.*)$/))) { cur = { q: m[1], options: [], answer: -1, explain: "" }; qs.push(cur); }
+    else if (cur && (m = l.match(/^[-*]\s+\[([ xX])\]\s+(.*)$/))) { if (m[1] !== " ") cur.answer = cur.options.length; cur.options.push(m[2]); }
+    else if (cur && l.startsWith(">")) cur.explain += (cur.explain ? " " : "") + l.replace(/^>\s?/, "");
+    else if (cur && !cur.options.length) cur.q += " " + l;
+  }
+  return qs.filter((q) => q.options.length >= 2 && q.answer >= 0);
+}
+function listItems(text) {
+  const items = [];
+  for (const raw of (text || "").split("\n")) {
+    const m = raw.match(/^[-*]\s+(.*)$/);
+    if (m) items.push(m[1]);
+    else if (raw.trim() && items.length) items[items.length - 1] += " " + raw.trim();
+  }
+  return items;
 }
 
-// ① 课间交叉链接：把正文里的 “阶段 N.M / Stage N.M / 阶段 N” 变成页内链接，浏览器前进/后退即可来回切换
-function decorateXrefs(root, currentId) {
-  const re = /(?:阶段|Stage)\s*([0-9]+|∞)(?:\.([0-9]+))?/g;
-  textNodesIn(root).forEach((node) => replaceIn(node, re, (m) => {
-    const id = m[2] ? XREF.exact.get(m[1] + "." + m[2]) : XREF.stageFirst.get(m[1]);
-    if (!id || id === currentId) return null;
-    const a = document.createElement("a");
-    a.className = "xref"; a.href = "#lesson/" + id; a.textContent = m[0];
-    return a;
-  }));
+/* ---------------- glossary hover cards ---------------- */
+const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const SKIP_TAG = new Set(["CODE", "PRE", "A", "H1", "H2", "H3", "H4", "H5", "BUTTON", "INPUT", "LABEL", "SELECT", "TEXTAREA", "SCRIPT", "STYLE", "SVG", "SUMMARY"]);
+const SKIP_SEL = ".katex,.formula,.section-h,.breadcrumb,.lsn-tag,.lsn-meta,.lsn-nav,.demo-host,.inline-demo,.quiz,.gloss,.xref,.further,.callout-title,figure,.toc,.next-card,.view-switch";
+function textNodes(root) {
+  const out = [];
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode(n) {
+      if (!n.nodeValue || !n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+      let p = n.parentElement;
+      while (p && p !== root) { if (SKIP_TAG.has(p.tagName)) return NodeFilter.FILTER_REJECT; p = p.parentElement; }
+      if (n.parentElement && n.parentElement.closest(SKIP_SEL)) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    },
+  });
+  while (w.nextNode()) out.push(w.currentNode);
+  return out;
 }
-
-// ② 知识小卡片：按 .oneliner / .section 逐块，每块每个概念“首次出现处”加一张释义卡
-function decorateGloss(root, lng) {
-  const terms = GLOSSARY
-    .flatMap((e) => e[lng].n.map((name) => ({ name, def: e[lng].d, title: e[lng].n[0], ascii: !/[一-鿿]/.test(name) })))
-    .sort((a, b) => b.name.length - a.name.length);
-  const blocks = [...root.querySelectorAll(".oneliner, .section")].filter((b) => !b.querySelector("#demo-mount"));
-  for (const block of blocks) {
-    const used = new Set();
-    for (const term of terms) {
-      if (used.has(term.title)) continue;
-      let re;
-      try { re = term.ascii ? new RegExp("(?<![\\w-])" + escRe(term.name) + "(?![\\w-])") : new RegExp(escRe(term.name)); }
-      catch { re = new RegExp(escRe(term.name)); }
-      for (const node of textNodesIn(block)) {
-        const m = re.exec(node.nodeValue);
-        if (!m) continue;
-        const i = m.index, txt = m[0], v = node.nodeValue;
-        const frag = document.createDocumentFragment();
-        if (i > 0) frag.append(v.slice(0, i));
-        const span = document.createElement("span");
-        span.className = "gloss"; span.tabIndex = 0; span.textContent = txt;
-        const card = document.createElement("span");
-        card.className = "gloss-card"; card.setAttribute("role", "note");
-        const b = document.createElement("b"); b.textContent = term.title; card.appendChild(b);
-        card.appendChild(document.createTextNode(term.def));
-        span.appendChild(card); frag.append(span);
-        if (i + txt.length < v.length) frag.append(v.slice(i + txt.length));
-        node.parentNode.replaceChild(frag, node);
-        used.add(term.title); break;
-      }
+let glossCache = null;
+function glossIndex() {
+  const l = lang();
+  if (glossCache && glossCache.lang === l) return glossCache;
+  const byKey = new Map(), all = [];
+  for (const e of GLOSSARY) {
+    const o = e[l]; if (!o || !(o.terms || o.n)) continue;
+    for (const term of o.terms || o.n || []) { const key = l === "en" ? term.toLowerCase() : term; if (!byKey.has(key)) byKey.set(key, { def: o.def || o.d, title: (o.terms || o.n)[0] }); all.push(term); }
+  }
+  const alt = [...new Set(all)].sort((a, b) => b.length - a.length).map(escRe).join("|");
+  const re = alt ? (l === "en" ? new RegExp(`(?<![A-Za-z0-9-])(?:${alt})(?![A-Za-z0-9-])`, "gi") : new RegExp(`(?:${alt})`, "g")) : null;
+  glossCache = { lang: l, re, byKey };
+  return glossCache;
+}
+function decorateGlossary(root) {
+  const { re, byKey } = glossIndex();
+  if (!re) return;
+  const l = lang(), used = new Set();
+  for (const node of textNodes(root)) {
+    const text = node.nodeValue; re.lastIndex = 0;
+    let m, last = 0, any = false; const frag = document.createDocumentFragment();
+    while ((m = re.exec(text))) {
+      const key = l === "en" ? m[0].toLowerCase() : m[0], hit = byKey.get(key);
+      if (!hit || used.has(hit.title)) continue;
+      used.add(hit.title);
+      if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+      const span = document.createElement("span");
+      span.className = "gloss"; span.tabIndex = 0; span.textContent = m[0];
+      const card = document.createElement("span");
+      card.className = "gloss-card"; card.setAttribute("role", "note");
+      const b = document.createElement("b"); b.textContent = hit.title; card.appendChild(b);
+      card.appendChild(document.createTextNode(hit.def));
+      span.appendChild(card); frag.appendChild(span);
+      last = m.index + m[0].length; any = true;
     }
+    if (any) { if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last))); node.parentNode.replaceChild(frag, node); }
   }
 }
-
-// ③ 卡片贴边翻转：术语靠近正文右缘时，把释义卡改为右对齐，免得伸到视口外被切掉
 function wireGlossFlip(root) {
-  // 同步量、同步定位：不等下一帧（等一帧会先按左对齐画出来再跳位，且后台标签页里 rAF 不触发）
   const place = (g) => {
     const card = g.querySelector(".gloss-card");
-    if (!card) return;
+    if (!card || window.matchMedia("(max-width: 640px)").matches) return;
     card.classList.remove("flip");
     const shown = card.getBoundingClientRect().width > 0;
-    if (!shown) card.style.display = "block"; // 还没显示就临时量一下，量完撤掉
+    if (!shown) card.style.display = "block";
     const limit = Math.min(root.getBoundingClientRect().right, window.innerWidth) - 8;
     if (card.getBoundingClientRect().right > limit) card.classList.add("flip");
     if (!shown) card.style.display = "";
@@ -188,286 +333,454 @@ function wireGlossFlip(root) {
   root.addEventListener("pointerover", hit);
   root.addEventListener("focusin", hit);
 }
-
-function decorateLesson(root, id, lng) {
-  try { decorateXrefs(root, id); decorateGloss(root, lng); wireGlossFlip(root); } catch (e) { /* 装饰失败不影响正文渲染 */ }
+function decorateFigures(root) {
+  root.querySelectorAll(".lesson-main figure").forEach((f) => {
+    if (f.querySelector(".fig-hint")) return;
+    const p = document.createElement("span");
+    p.className = "fig-hint"; p.textContent = t("← 左右滑动查看完整图示 →", "← Swipe to see the whole diagram →");
+    f.prepend(p);
+  });
 }
 
-/* ---------------- 语言切换按钮（常驻右上角） ---------------- */
-function renderLangToggle() {
-  let el = document.getElementById("lang-toggle");
-  if (!el) {
-    el = document.createElement("button");
-    el.id = "lang-toggle";
-    document.body.appendChild(el);
-    el.addEventListener("click", () => {
-      state.lang = lang() === "en" ? "zh" : "en";
-      saveState(state);
-      renderLangToggle();
-      render();
-    });
-  }
-  el.textContent = lang() === "en" ? "中文" : "EN";
-  el.setAttribute("aria-label", lang() === "en" ? "Switch to Chinese" : "切换到 English");
+/* ---------------- chrome: nav + closing ---------------- */
+const ICON_MENU = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h8"/></svg>`;
+function ringSVG(pct) {
+  const r = 8.5, c = 2 * Math.PI * r;
+  return `<svg class="ring" viewBox="0 0 22 22" aria-hidden="true"><circle class="bg" cx="11" cy="11" r="${r}"/><circle class="fg" cx="11" cy="11" r="${r}" stroke-dasharray="${c.toFixed(2)}" stroke-dashoffset="${(c * (1 - pct / 100)).toFixed(2)}" transform="rotate(-90 11 11)"/></svg>`;
 }
-
-/* ---------------- 路由 ---------------- */
-async function render() {
-  const hash = location.hash.replace(/^#/, "");
-  if (hash.startsWith("lesson/")) await renderLesson(hash.slice("lesson/".length));
-  else renderRoadmap();
-  window.scrollTo(0, 0);
-}
-window.addEventListener("hashchange", render);
-
-/* ---------------- 视图：路线图 ---------------- */
-function renderRoadmap() {
-  const total = readyLessons().length;
-  const doneN = readyLessons().filter((l) => state.done[l.id]).length;
+function renderChrome(view) {
+  document.documentElement.lang = lang() === "en" ? "en" : "zh-CN";
+  document.title = `${L(COURSE, "title")}${view.title ? " · " + view.title : ""}`;
+  const all = allLessons(), total = all.length, doneN = doneCount(all);
   const pct = total ? Math.round((doneN / total) * 100) : 0;
-
-  let html = `
-    <header class="hd">
-      <h1 class="hd-title"><span class="hd-logo">${LOGO}</span>${L(COURSE, "title")}</h1>
-      <p class="hd-sub">${L(COURSE, "subtitle")}</p>
-      <div class="hd-bar">
-        <div class="progress">
-          <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
-          <div class="progress-text">${t("已完成", "Completed")} ${doneN} / ${total} ${t("节", "lessons")} · ${pct}%</div>
-        </div>
-        <div class="goals" role="group" aria-label="${t("学习目标", "Learning goal")}">
-          <span class="goals-label">${t("我的目标：", "My goal:")}</span>
-          ${COURSE.goals.map((g) => `<button class="goal-chip" data-goal="${g.id}" aria-pressed="${state.goal === g.id}">${L(g, "label")}</button>`).join("")}
-        </div>
-      </div>
-    </header>`;
-
-  html += `
-    <section class="philosophy">
-      <h2 class="ph-title">${t("设计理念", "Design Philosophy")}</h2>
-      <p class="ph-lead">${t("把奥地利学派经济学——从门格尔到米塞斯、哈耶克、罗斯巴德，再到今天——拆成一条<strong>从浅到深</strong>的主线，让没有基础的人，也能一步步走到“读懂《人的行动》、用商业周期理论解释历史、并用奥派眼镜分析网络效应、社交媒体、比特币与 AI”。", "Austrian economics — from Menger through Mises, Hayek and Rothbard to today — laid out as one <strong>shallow-to-deep</strong> path, so anyone starting from zero can reach the point of reading Human Action, explaining history with business-cycle theory, and analyzing network effects, social media, Bitcoin and AI through Austrian eyes.")}</p>
-      <div class="ph-grid">
-        <div class="ph-card"><div class="ph-ic">🧭</div><h3>${t("一条主线", "One Path")}</h3><p>${t("19 个阶段、6 个深度层（入门 → 原理 → 系统 → 精通 → 新经济时代 → ∞），共 96 节。先把价值、方法、资本、货币与周期五块地基打牢，再学干预、制度与宏观，最后把整套工具箱用到今天的数字经济上。", "19 stages across 6 depth tiers (Beginner → Principles → Systems → Mastery → New Economy → ∞) — 96 lessons in all. Lay the five foundations first (value, method, capital, money, cycles), then intervention, institutions and macro, and finally aim the whole toolkit at today's digital economy.")}</p></div>
-        <div class="ph-card"><div class="ph-ic">🔬</div><h3>${t("处处可玩", "Hands-On")}</h3><p>${t("每节配一个浏览器内交互演示，很多是真算——边际效用表、边际对定价、哈耶克三角、信用扩张与周期模拟、坎蒂隆效应追踪、网络效应估值与 AI 计划者沙盘。", "Every lesson has an in-browser interactive demo; many compute for real — marginal-utility tables, marginal-pair pricing, Hayekian triangles, credit-expansion cycle simulators, Cantillon-effect tracers, network-effect valuations and an AI-planner sandbox.")}</p></div>
-        <div class="ph-card"><div class="ph-ic">🧩</div><h3>${t("固定模板", "Fixed Template")}</h3><p>${t("直觉 → 原理（可折叠）→ 演示 → 类比 → 常见误解 → 自测 → 延伸，认知负担最小。", "Intuition → Mechanics (collapsible) → Demo → Analogy → Misconceptions → Quiz → Further reading. Minimal cognitive load.")}</p></div>
-        <div class="ph-card"><div class="ph-ic">🔒</div><h3>${t("本地优先", "Local-First")}</h3><p>${t("进度只存在你自己的浏览器，纯本地、不上传——与奥派“个人主权、自下而上”的精神一致。", "Progress lives only in your own browser — fully local, never uploaded, in the bottom-up, individual-sovereignty spirit of the school itself.")}</p></div>
-      </div>
-    </section>`;
-
-  if (total > 0 && doneN === total) {
-    html += `<div class="done-banner">${t(`🎉 恭喜！你已读完整条「奥派之路」——全部 ${total} 节，从“钻石与水”到“用奥派眼镜看 AI 时代”。`, `🎉 Congratulations! You've completed the entire Droplet Labs · Austrian Path — all ${total} lessons, from “diamonds and water” to “the AI era through Austrian eyes.”`)}</div>`;
+  let nav = document.getElementById("nav");
+  if (!nav) {
+    nav = document.createElement("header"); nav.className = "nav"; nav.id = "nav"; document.body.prepend(nav);
+    const bar = document.createElement("div"); bar.className = "readbar"; bar.id = "readbar"; document.body.prepend(bar);
   }
+  nav.innerHTML = `
+    <div class="nav-inner">
+      <a class="nav-brand" href="#" aria-label="${t("奥派之路 · 路线图", "Austrian Path · roadmap")}">
+        <img class="nav-logo" src="${LOGO_H}" alt="Droplet Labs" width="1422" height="314">
+        <span class="nav-sep"></span>
+        <span class="nav-course">${t("<b>奥派</b>之路", "<b>Austrian</b> Path")}</span>
+      </a>
+      <span class="nav-spacer"></span>
+      <div class="nav-actions">
+        <span class="nav-prog" title="${t("已完成", "Completed")} ${doneN}/${total}">${ringSVG(pct)}<span class="t">${doneN} / ${total}</span></span>
+        ${view.kind === "lesson" ? `<button class="nav-btn nav-menu-btn" data-sbtoggle aria-label="${t("课程目录", "Lessons")}">${ICON_MENU}<span class="t">${t("目录", "Lessons")}</span></button>` : ""}
+        <button class="nav-btn paper" data-lang aria-label="${t("Switch to English", "切换到中文")}">${t("EN", "中文")}</button>
+      </div>
+    </div>`;
+  let foot = document.getElementById("closing");
+  if (!foot) { foot = document.createElement("footer"); foot.className = "closing"; foot.id = "closing"; document.body.appendChild(foot); }
+  foot.innerHTML = `
+    <div class="closing-inner">
+      <div class="closing-top">
+        <div>
+          <h2>${t("价值在心里，价格传递知识，时间无法消去。", "Value lives in minds. Prices carry knowledge. Time can't be wished away.")}</h2>
+          <p>${t("奥派之路是 Droplet Labs 学习路径系列的一门：用四个观念——主观价值、人的行动、价格与知识、时间与不确定性——从钻石与水的悖论一路走到网络效应、比特币与 AI。", "Austrian Path is part of the Droplet Labs learning paths: four ideas — subjective value, human action, prices as knowledge, time and uncertainty — carry you from the diamond–water paradox to network effects, Bitcoin and AI.")}</p>
+        </div>
+        <div class="closing-links">
+          <a class="btn btn-line btn-sm" href="${LINKS.paths}" target="_blank" rel="noopener">${t("全部学习路径", "All learning paths")} <span class="arrow">↗</span></a>
+          <a class="btn btn-paper btn-sm" href="${LINKS.site}" target="_blank" rel="noopener">Droplet Labs <span class="arrow">↗</span></a>
+        </div>
+      </div>
+      <div class="closing-bottom">
+        <img class="footer-logo" src="${LOGO_S}" alt="Droplet Labs" width="1005" height="405">
+        <div class="legal">
+          <span>© 2026 Droplet Labs</span>
+          <span>${t("仅供教育：课程讲的是思维框架与历史案例，不构成任何投资建议。", "Education only: the course teaches ways of thinking and historical cases; nothing here is investment advice.")}</span>
+        </div>
+        <div class="closing-actions">
+          <button type="button" data-lang>${t("English", "中文")}</button>
+          <a href="#" data-top>${t("回到顶部 ↑", "Back to top ↑")}</a>
+        </div>
+      </div>
+    </div>`;
+  document.querySelectorAll("[data-lang]").forEach((b) => b.addEventListener("click", () => { state.lang = lang() === "en" ? "zh" : "en"; saveState(state); glossCache = null; render({ keepScroll: false }); }));
+  foot.querySelector("[data-top]").addEventListener("click", (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); });
+  nav.querySelector("[data-sbtoggle]")?.addEventListener("click", () => document.body.classList.toggle("sb-open"));
+}
 
-  let lastTier = null;
-  for (const s of COURSE.stages) {
-    if (s.tier !== lastTier) { html += `<div class="tier-head">${L(tierOf(s.tier), "label")}</div>`; lastTier = s.tier; }
-    html += stageHTML(s);
+/* ---------------- routing ---------------- */
+let cleanup = [], renderToken = 0;
+const onCleanup = (fn) => cleanup.push(fn);
+async function render(opts = {}) {
+  cleanup.forEach((fn) => { try { fn(); } catch { /* */ } }); cleanup = [];
+  document.body.classList.remove("sb-open");
+  const hash = location.hash.replace(/^#/, ""), token = ++renderToken;
+  if (hash.startsWith("lesson/")) await renderLesson(hash.slice(7), token);
+  else renderRoadmap(hash);
+  if (!opts.keepScroll && !(hash && !hash.startsWith("lesson/"))) window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", () => render());
+
+/* ---------------- home / roadmap ---------------- */
+const IDEAS = [
+  { zh: ["价值是主观的", "价值不在物里，而在行动人的评价里。钻石与水的悖论、价格、利息、成本，全都从“边际单位对某个人值多少”推出来。", "阶段 1 · 3 · 15 · 16"],
+    en: ["Value is subjective", "Value lives not in things but in the judgments of acting people. The diamond–water paradox, prices, interest and cost all follow from what the marginal unit is worth to someone.", "Stages 1 · 3 · 15 · 16"] },
+  { zh: ["人有目的地行动", "人用手段追求目的——这是行动学的起点。经济规律是从行动的逻辑演绎出来的，不是从统计里拟合出来的。", "阶段 2 · 6 · 14 · 18"],
+    en: ["Humans act purposefully", "People use means to pursue ends: that is where praxeology starts. Economic laws are deduced from the logic of action, not fitted to statistics.", "Stages 2 · 6 · 14 · 18"] },
+  { zh: ["价格传递知识", "价格把分散在千万人头脑里的知识压缩成一个数字。市场是一个发现过程；没有价格，就没有经济计算。", "阶段 1 · 7 · 8 · 9"],
+    en: ["Prices carry knowledge", "A price compresses knowledge scattered across millions of minds into one number. The market is a discovery process; without prices there is no economic calculation.", "Stages 1 · 7 · 8 · 9"] },
+  { zh: ["时间与不确定性", "生产要花时间，未来无法确知。利率协调今天与明天；人为压低它，就会把资本引向错误的地方——周期由此而来。", "阶段 3 · 4 · 5 · 10 · 17"],
+    en: ["Time & uncertainty", "Production takes time and the future is unknowable. The interest rate coordinates today with tomorrow; push it down artificially and capital flows to the wrong places — that is where cycles come from.", "Stages 3 · 4 · 5 · 10 · 17"] },
+];
+const STEPS = [["直觉", "Intuition"], ["原理", "Mechanics"], ["演示", "Demo"], ["类比", "Analogy"], ["误解", "Myths"], ["自测", "Quiz"], ["延伸", "Further"]];
+
+function renderRoadmap(anchor) {
+  renderChrome({ kind: "home" });
+  const all = allLessons(), total = all.length, doneN = doneCount(all);
+  const pct = total ? Math.round((doneN / total) * 100) : 0;
+  const next = all.find((l) => !state.done[l.id]) || null;
+  const tiers = COURSE.tiers.map((tr) => { const ls = COURSE.stages.filter((s) => s.tier === tr.id).flatMap((s) => s.lessons); return { ...tr, total: ls.length, done: doneCount(ls) }; });
+  const cta = next
+    ? `<a class="btn btn-ink" href="#lesson/${next.id}"><span class="btn-text"><small>${doneN ? t("继续学习", "Continue") : t("从这里开始", "Start here")} · ${findLesson(next.id).num}</small>${escHTML(L(next, "title"))}</span><span class="arrow">→</span></a>`
+    : `<a class="btn btn-ink" href="#lesson/${all[0].id}">${t("重温第一课", "Revisit lesson 0.1")} <span class="arrow">→</span></a>`;
+  let html = `
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="chip-label">Droplet Labs · ${t("学习路径", "Learning Path")}</span>
+        <h1>${t("奥派<em>之路</em>", "Austrian <em>Path</em>")}</h1>
+        <p class="hero-lede">${escHTML(L(COURSE, "subtitle"))}</p>
+        <ul class="hero-facts">
+          <li><b>${STAGE_N}+∞</b>${t("个阶段", "stages")}</li>
+          <li><b>${total}</b>${t("节课", "lessons")}</li>
+          <li><b>${DEMO_COUNT}</b>${t("个交互演示", "live demos")}</li>
+          <li><b>2</b>${t("种语言", "languages")}</li>
+        </ul>
+        <div class="hero-cta">${cta}<a class="btn btn-line" href="#roadmap">${t("浏览路线图", "Browse the roadmap")} <span class="arrow">↓</span></a></div>
+      </div>
+      <aside class="panel prog-panel" aria-label="${t("学习进度", "Progress")}">
+        <img class="mark" src="${MARK}" alt="" aria-hidden="true">
+        <div class="label">${t("你的进度", "Your progress")}</div>
+        <div class="prog-top" style="margin-top:14px"><div><div class="prog-big">${pct}<small>%</small></div><div class="prog-sub">${t(`已完成 ${doneN} / ${total} 节`, `${doneN} of ${total} lessons completed`)}</div></div></div>
+        <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <div class="tier-meter" style="grid-template-columns:repeat(${tiers.length},1fr)">${tiers.map((tr) => `<i style="--c:${tr.color}" title="${escHTML(L(tr, "label"))} · ${tr.done}/${tr.total}"><b style="width:${tr.total ? (tr.done / tr.total) * 100 : 0}%"></b></i>`).join("")}</div>
+        ${next ? `<div class="next-up"><div class="label">${t("下一课", "Up next")}</div><a href="#lesson/${next.id}"><span class="code">${findLesson(next.id).num}</span>${escHTML(L(next, "title"))}</a></div>` : ""}
+        <div class="goals" role="group" aria-label="${t("学习目标", "Learning goal")}">
+          <div class="label">${t("按目标突出课程", "Highlight lessons for")}</div>
+          <div class="goal-row">${COURSE.goals.map((g) => `<button class="goal-chip" data-goal="${g.id}" aria-pressed="${state.goal === g.id}">${escHTML(L(g, "label"))}</button>`).join("")}</div>
+        </div>
+      </aside>
+    </section>`;
+  if (total > 0 && doneN === total) html += `<div class="done-banner">${t(`恭喜！你已走完整条「奥派之路」——全部 ${total} 节。`, `Congratulations — you've completed the entire Austrian Path, all ${total} lessons.`)}</div>`;
+  html += `
+    <section class="sec">
+      <div class="sec-grid">
+        <div class="sec-head"><span class="label"><span class="dot"></span>${t("贯穿全课的主线", "The spine")}</span><h2>${t("四个观念，串起每一节", "Four ideas behind every lesson")}</h2><p>${t("每一节都是这条主线上的一颗珠子：正文里的“阶段 X.Y”链接会把你带回它依靠的地基，或带向它将要解释的今天。", "Every lesson is a bead on this one string: the “Stage X.Y” links in the text take you back to the foundation it rests on, or forward to the present it helps explain.")}</p></div>
+        <div class="ideas">${IDEAS.map((d, i) => { const x = d[lang()]; return `<article class="idea"><div class="idea-n">${"①②③④"[i]}</div><h3>${x[0]}</h3><p>${x[1]}</p><div class="where">${x[2]}</div></article>`; }).join("")}</div>
+      </div>
+    </section>
+    <section class="sec">
+      <div class="sec-grid">
+        <div class="sec-head"><span class="label"><span class="dot"></span>${t("每节课怎么学", "How a lesson works")}</span><h2>${t("先图像，后公式，再动手", "Picture first, then formula, then hands-on")}</h2></div>
+        <div>
+          <ol class="steps">${STEPS.map((s) => `<li>${t(s[0], s[1])}</li>`).join("")}</ol>
+          <div class="principles">
+            <div><h4>${t("数字例子与真公式", "Numbers and real formulas")}</h4><p>${t("每个抽象概念都配一个具体的数字例子——几桶水、利率从 5% 压到 2%、100 美元新钱怎么流；计算与公式都排版成真正的数学式。", "Every abstract idea comes with a concrete number example — buckets of water, a rate pushed from 5% to 2%, where $100 of new money flows; every calculation is typeset as real math.")}</p></div>
+            <div><h4>${t("思想实验的沙盘", "Sandboxes for thought experiments")}</h4><p>${t("边际效用表、哈耶克三角、信用扩张、坎蒂隆效应、网络效应估值、AI 计划者……每节都有一个能动手改参数的演示。", "Marginal-utility tables, the Hayekian triangle, credit expansion, Cantillon effects, network-effect valuation, an AI planner — every lesson has a demo whose parameters you can change.")}</p></div>
+            <div><h4>${t("立场清楚，对手先 steelman", "A clear view, opponents steelmanned")}</h4><p>${t("这是一门奥派课程，但批评凯恩斯、芝加哥、MMT 之前，先把对方最强的版本讲出来；奥派自己的软肋也坦率写出。进度只存在你的浏览器，不构成投资建议。", "This is an Austrian course, but Keynes, Chicago and MMT get their strongest case before any reply, and the school's own weak spots are named. Progress stays in your browser; nothing here is investment advice.")}</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="sec" id="roadmap">
+      <div class="sec-head" style="margin-bottom:18px"><span class="label"><span class="dot"></span>${t("路线图", "Roadmap")}</span><h2>${t(`从浅到深的 ${STAGE_N} 个阶段，再加一个 ∞`, `${STAGE_N} stages from the surface to the depths — plus ∞`)}</h2></div>
+      <nav class="tier-nav" aria-label="${t("按层跳转", "Jump to tier")}">${tiers.map((tr, i) => `<a href="#tier-${tr.id}" data-tier="${tr.id}" style="--c:${tr.color}"><i></i>${i + 1} · ${escHTML(L(tr, "label").split(" · ")[0])}</a>`).join("")}</nav>`;
+  for (const tr of tiers) {
+    const stages = COURSE.stages.filter((s) => s.tier === tr.id);
+    const [head, ...rest] = L(tr, "label").split(" · ");
+    html += `
+      <section class="tier" id="tier-${tr.id}">
+        <div class="tier-grid">
+          <div class="tier-side" style="--c:${tr.color}">
+            <span class="label"><i></i>${escHTML(head)}</span>
+            <h2>${escHTML(rest.join(" · ") || head)}</h2>
+            <p class="tier-blurb">${escHTML(L(tr, "blurb") || "")}</p>
+            <div class="tp">${tr.done} / ${tr.total} ${t("节已完成", "done")}<div class="bar"><b style="width:${tr.total ? (tr.done / tr.total) * 100 : 0}%"></b></div></div>
+          </div>
+          <div class="stages-list">${stages.map((s) => stageHTML(s, tr.color)).join("")}</div>
+        </div>
+      </section>`;
   }
   app.innerHTML = `<div class="home">${html}</div>`;
-
-  app.querySelectorAll("[data-goal]").forEach((btn) =>
-    btn.addEventListener("click", () => {
-      state.goal = state.goal === btn.dataset.goal ? null : btn.dataset.goal;
-      saveState(state);
-      renderRoadmap();
-    }));
-  app.querySelectorAll("[data-open]").forEach((el) =>
-    el.addEventListener("click", () => { location.hash = `lesson/${el.dataset.open}`; }));
+  app.querySelectorAll("[data-goal]").forEach((btn) => btn.addEventListener("click", () => {
+    state.goal = state.goal === btn.dataset.goal ? null : btn.dataset.goal; saveState(state);
+    const y = window.scrollY; renderRoadmap(); window.scrollTo(0, y);
+  }));
+  app.querySelectorAll("[data-open]").forEach((el) => el.addEventListener("click", () => { location.hash = `lesson/${el.dataset.open}`; }));
+  app.querySelectorAll('a[href^="#tier-"], a[href="#roadmap"]').forEach((a) => a.addEventListener("click", (e) => {
+    e.preventDefault(); document.querySelector(a.getAttribute("href"))?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }));
+  const links = [...app.querySelectorAll(".tier-nav a")];
+  const io = new IntersectionObserver((ents) => { ents.forEach((en) => { if (en.isIntersecting) links.forEach((l) => l.classList.toggle("on", l.dataset.tier === en.target.id.slice(5))); }); }, { rootMargin: "-45% 0px -50% 0px" });
+  app.querySelectorAll(".tier").forEach((s) => io.observe(s));
+  onCleanup(() => io.disconnect());
+  setReadbar(null);
+  if (anchor) document.getElementById(anchor)?.scrollIntoView({ block: "start" });
 }
-
-function stageHTML(s) {
-  const color = tierOf(s.tier).color;
-  const ready = s.lessons.filter((l) => l.status === "ready");
-  const stageDone = ready.length > 0 && ready.every((l) => state.done[l.id]);
-  const chips = s.lessons.length
-    ? s.lessons.map((l) => {
-        if (l.status !== "ready") {
-          return `
-          <div class="chip chip-soon">
-            <span class="chip-mark"></span>
-            <span class="chip-title">${L(l, "title")}</span>
-            ${stars(l.difficulty)}
-            <span class="soon-tag">${t("编写中", "Soon")}</span>
-          </div>`;
-        }
-        const done = state.done[l.id];
-        const rec = state.goal && relevant(l);
-        const dim = state.goal && !relevant(l);
-        return `
-          <button class="chip ${dim ? "dim" : ""} ${rec ? "rec" : ""}" data-open="${l.id}">
-            <span class="chip-mark ${done ? "done" : ""}">${done ? "✓" : ""}</span>
-            <span class="chip-title">${L(l, "title")}</span>
-            ${stars(l.difficulty)}
-            ${rec ? `<span class="rec-badge">${t("推荐", "Pick")}</span>` : ""}
-            <span class="chip-arrow">→</span>
-          </button>`;
-      }).join("")
-    : `<div class="chip chip-soon"><span class="chip-mark"></span>${t("课程编写中…", "Coming soon…")}</div>`;
-
+function stageHTML(s, color) {
+  const d = doneCount(s.lessons), stageDone = s.lessons.length > 0 && d === s.lessons.length;
+  const chips = s.lessons.map((l, i) => {
+    const done = state.done[l.id], rec = state.goal && relevant(l), dim = state.goal && !relevant(l);
+    return `<button class="chip ${dim ? "dim" : ""} ${rec ? "rec" : ""}" data-open="${l.id}">
+        <span class="chip-mark ${done ? "done" : ""}">${done ? "✓" : ""}</span>
+        <span class="chip-code">${s.n}.${i + 1}</span>
+        <span class="chip-title">${escHTML(L(l, "title"))}${rec ? ` <span class="rec-badge">${t("推荐", "Pick")}</span>` : ""}</span>
+        ${stars(l.difficulty)}
+        <span class="chip-arrow">→</span>
+      </button>`;
+  }).join("");
   return `
-    <section class="stage ${stageDone ? "done" : ""}">
-      <div class="stage-num" style="background:${color}">${stageDone ? "✓" : s.n}</div>
-      <div class="stage-body">
-        <div class="stage-title">${L(s, "title")}${stageDone ? `<span class="stage-done-badge">${t("已完成", "Done")}</span>` : ""}</div>
-        <p class="stage-blurb">${L(s, "blurb")}</p>
-        <div class="chips">${chips}</div>
+    <article class="stage ${stageDone ? "done" : ""}">
+      <div class="stage-top">
+        <div class="stage-num" style="background:${color}">${stageDone ? "✓" : s.n}</div>
+        <div class="stage-body">
+          <div class="stage-title">${escHTML(L(s, "title"))}<span class="stage-count">${d}/${s.lessons.length}</span>${stageDone ? `<span class="stage-done-badge">${t("已完成", "Done")}</span>` : ""}</div>
+          ${s.question ? `<p class="stage-q">${escHTML(L(s, "question"))}</p>` : ""}
+          <p class="stage-blurb">${escHTML(L(s, "blurb"))}</p>
+        </div>
       </div>
-    </section>`;
+      <div class="chips">${chips}</div>
+    </article>`;
 }
 
-/* ---------------- 左侧导航栏 ---------------- */
-function sidebarHTML(currentId) {
-  const total = readyLessons().length;
-  const doneN = readyLessons().filter((l) => state.done[l.id]).length;
-  const pct = total ? Math.round((doneN / total) * 100) : 0;
-  let html = `<nav class="sidebar">
-    <div class="sb-home" data-back><span class="hd-logo">${LOGO}</span>${L(COURSE, "title")}</div>
-    <div class="sb-progress">${t("已完成", "Done")} ${doneN}/${total} · ${pct}%</div>`;
+/* ---------------- sidebar ---------------- */
+function sidebarHTML(currentId, currentStage) {
+  const all = allLessons();
+  let html = `<aside class="sidebar" id="sidebar" aria-label="${t("课程目录", "Lessons")}">
+    <div class="sb-head"><button class="sb-home" data-back>← ${t("路线图", "Roadmap")}</button><span class="sb-progress">${doneCount(all)}/${all.length}</span><button class="sb-close" data-sbclose aria-label="${t("关闭", "Close")}">✕</button></div>`;
   for (const s of COURSE.stages) {
     const color = tierOf(s.tier).color;
-    html += `<div class="sb-stage"><div class="sb-stage-h"><span class="n" style="background:${color}">${s.n}</span>${L(s, "title")}</div>`;
-    html += s.lessons.length
-      ? s.lessons.map((l) => {
-          if (l.status !== "ready") {
-            return `<div class="sb-lesson soon"><span class="sb-check"></span><span class="sb-t">${L(l, "title")}</span>${stars(l.difficulty)}</div>`;
-          }
-          const dim = state.goal && !relevant(l);
-          return `<div class="sb-lesson${l.id === currentId ? " active" : ""}${dim ? " dim" : ""}" data-go="${l.id}"><span class="sb-check">${state.done[l.id] ? "✓" : ""}</span><span class="sb-t">${L(l, "title")}</span>${stars(l.difficulty)}</div>`;
-        }).join("")
-      : `<div class="sb-lesson soon"><span class="sb-check"></span>${t("课程编写中…", "Coming soon…")}</div>`;
-    html += `</div>`;
+    html += `<details class="sb-stage"${s === currentStage ? " open" : ""}>
+      <summary><span class="n" style="background:${color}">${s.n}</span><span class="t">${escHTML(L(s, "title"))}</span><span class="c">${doneCount(s.lessons)}/${s.lessons.length}</span></summary>
+      <div class="sb-list">${s.lessons.map((l, i) => `<div class="sb-lesson${l.id === currentId ? " active" : ""}${state.goal && !relevant(l) ? " dim" : ""}" data-go="${l.id}" role="link" tabindex="0"><span class="sb-check">${state.done[l.id] ? "✓" : ""}</span><span class="cd">${s.n}.${i + 1}</span><span class="sb-t">${escHTML(L(l, "title"))}</span></div>`).join("")}</div>
+    </details>`;
   }
-  return html + `</nav>`;
+  return html + `</aside>`;
 }
 
-/* ---------------- 视图：课程页 ---------------- */
-async function renderLesson(id) {
+/* ---------------- reading progress ---------------- */
+function setReadbar(el) {
+  const bar = document.getElementById("readbar");
+  if (!bar) return;
+  if (!el) { bar.style.width = "0"; return; }
+  const upd = () => { const r = el.getBoundingClientRect(), h = r.height - window.innerHeight * 0.6; bar.style.width = `${Math.max(0, Math.min(1, -r.top / (h > 0 ? h : 1))) * 100}%`; };
+  upd();
+  window.addEventListener("scroll", upd, { passive: true }); window.addEventListener("resize", upd);
+  onCleanup(() => { window.removeEventListener("scroll", upd); window.removeEventListener("resize", upd); bar.style.width = "0"; });
+}
+
+/* ---------------- lesson view ---------------- */
+const lessonCache = new Map();
+async function fetchLesson(id) {
+  const key = lang() + "/" + id;
+  if (lessonCache.has(key)) return lessonCache.get(key);
+  let fellBack = false;
+  let res = await fetch(`./content/lessons/${lang()}/${id}.md?v=${V}`);
+  if (!res.ok && lang() === "en") { res = await fetch(`./content/lessons/zh/${id}.md?v=${V}`); fellBack = true; }
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = { ...parseLesson(await res.text()), fellBack };
+  lessonCache.set(key, data);
+  return data;
+}
+function readingMinutes(text) {
+  const clean = text.replace(/<svg[\s\S]*?<\/svg>/g, " ").replace(/\$\$[\s\S]*?\$\$/g, " ");
+  const cjk = (clean.match(/[一-鿿]/g) || []).length;
+  const words = (clean.replace(/[一-鿿]/g, " ").match(/[A-Za-z0-9’']+/g) || []).length;
+  return Math.max(4, Math.round(cjk / 380 + words / 220));
+}
+
+async function renderLesson(id, token) {
   const hit = findLesson(id);
   if (!hit) { location.hash = ""; return; }
-
-  let data, fellBack = false;
-  try {
-    if (lang() === "en") {
-      try { data = (await import(enModulePath(hit.lesson.module) + "?v=" + V)).default; }
-      catch { data = (await import(hit.lesson.module + "?v=" + V)).default; fellBack = true; }
-    } else {
-      data = (await import(hit.lesson.module + "?v=" + V)).default;
-    }
-  } catch (e) {
-    app.innerHTML = `<button class="back" data-back>← ${t("返回路线图", "Back to roadmap")}</button>
-      <div class="demo-warn">${t("课程加载失败", "Failed to load lesson")}：${esc(String(e))}</div>`;
-    app.querySelectorAll("[data-back]").forEach((b) => b.addEventListener("click", () => { location.hash = ""; }));
+  let data;
+  try { data = await fetchLesson(id); } catch (e) {
+    renderChrome({ kind: "lesson" });
+    app.innerHTML = `<button class="btn btn-line btn-sm" data-back>← ${t("返回路线图", "Back to roadmap")}</button><div class="demo-warn" style="margin-top:16px">${t("这节课还没有写好，或加载失败", "This lesson isn't available yet, or failed to load")}：${escHTML(String(e))}</div>`;
+    app.querySelector("[data-back]").addEventListener("click", () => { location.hash = ""; });
     return;
   }
-
-  const done = !!state.done[id];
-  const prereq = (data.prereqs || []).map((p) => {
-    const ph = findLesson(p);
-    return ph ? `<a href="#lesson/${p}">${L(ph.lesson, "title")}</a>` : p;
-  }).join(t("、", ", "));
-
-  const seq = readyLessons();
-  const si = seq.findIndex((l) => l.id === id);
+  if (token !== renderToken) return;
+  const S = data.sections, meta = data.meta;
+  const title = L(hit.lesson, "title");
+  renderChrome({ kind: "lesson", title });
+  const tier = tierOf(hit.stage.tier);
+  const seq = allLessons(), si = seq.findIndex((l) => l.id === id);
   const prevL = seq[si - 1], nextL = seq[si + 1];
-  const navHTML = `
-    <div class="lsn-nav">
-      ${prevL ? `<button class="navbtn" data-go="${prevL.id}">← ${t("上一课", "Prev")}<span>${L(prevL, "title")}</span></button>` : "<span></span>"}
-      ${nextL ? `<button class="navbtn navbtn-next" data-go="${nextL.id}">${t("下一课", "Next")} →<span>${L(nextL, "title")}</span></button>` : "<span></span>"}
-    </div>`;
+  const done = !!state.done[id];
+  const prereqs = (meta.prereqs || "").split(/[,\s]+/).filter(Boolean);
+  const quiz = parseQuiz(S.quiz), miscon = listItems(S.misconceptions), takeaways = listItems(S.takeaways), further = listItems(S.further);
+  const inlined = new Set([...[S.intuition, S.mechanics, S.analogy].join("\n").matchAll(/^::demo\[([a-z0-9-]+)\]/gm)].map((m) => m[1]));
+  const demos = (meta.demo || "").split(/[,\s]+/).filter((d) => d && !inlined.has(d));
+  const mins = readingMinutes([S.intuition, S.mechanics, S.analogy].join("\n"));
 
-  const SH = (icon, zh, en) => `<div class="section-h">${icon} ${t(zh, en)}</div>`;
+  const secs = [];
+  const add = (key, zh, en, body, extra = "") => { if (body) secs.push({ key, label: t(zh, en), body, extra }); };
+  add("intuition", "直觉", "Intuition", md(S.intuition));
+  add("mechanics", "深入原理", "How it really works", md(S.mechanics), " deep");
+  add("demo", "动手玩一玩", "Try it yourself", demos.map((d) => `<div class="demo-host" data-demo="${d}"></div>`).join(""));
+  add("analogy", "类比", "Analogy", md(S.analogy));
+  add("miscon", "常见误解", "Common misconceptions", miscon.length ? `<ul class="miscon">${miscon.map((m) => `<li>${inline(m)}</li>`).join("")}</ul>` : "");
+  add("takeaways", "本节要点", "Key takeaways", takeaways.length ? `<ol class="takeaways">${takeaways.map((m) => `<li>${inline(m)}</li>`).join("")}</ol>` : "");
+  add("quiz", "自测", "Quick quiz", quiz.length ? `<div class="quiz" id="quiz"></div>` : "");
+  add("further", "延伸阅读", "Further reading", further.length ? `<div class="further">${further.map((f) => {
+    const m = f.match(/^\[([^\]]+)\]\(((?:[^()\s]|\([^()\s]*\))+)\)\s*(?:[—–-]\s*)?(.*)$/); // URLs may contain one level of (…), e.g. Wikipedia
+    return m ? `<a href="${escAttr(m[2])}" target="_blank" rel="noopener"><span>${inline(m[1])}${m[3] ? `<em>${inline(m[3])}</em>` : ""}<small>${escHTML(host(m[2]))}</small></span><span class="ext">↗</span></a>` : `<div class="further-plain">${inline(f)}</div>`;
+  }).join("")}</div>` : "");
+  const secHTML = secs.map((s, i) => `
+    <section class="section${s.extra}" id="s-${s.key}"${s.key === "mechanics" ? " data-mech" : ""}>
+      <h2 class="section-h"><span class="no">${String(i + 1).padStart(2, "0")}</span>${s.label}</h2>
+      ${s.body}
+    </section>`).join("");
 
   app.innerHTML = `
     <div class="lesson-layout">
-      <button class="sb-toggle" data-sbtoggle>📚 ${t("课程目录", "Lessons")}</button>
-      ${sidebarHTML(id)}
-      <div class="lesson-main">
-    <div class="breadcrumb"><a data-back>${L(COURSE, "title")}</a> › ${t("阶段", "Stage")} ${hit.stage.n} · ${L(hit.stage, "title")}</div>
-    <h1 class="lsn-title">${L(data, "title") || data.title}<span class="diff-badge" title="${diffLabel(hit.lesson.difficulty)}">${stars(hit.lesson.difficulty)} ${diffLabel(hit.lesson.difficulty)}</span></h1>
-    ${fellBack ? `<div class="fallback-note">${t("（本节英文版正在翻译中，暂以中文显示）", "(English version of this lesson is being translated; showing Chinese for now.)")}</div>` : ""}
-    ${prereq ? `<div class="lsn-tag">${t("前置：", "Prerequisites: ")}${prereq}</div>` : ""}
-    <div class="oneliner">${inline(data.oneLiner)}</div>
-
-    <label class="depth-toggle"><input type="checkbox" id="depth" /> ${t("只看直觉版（隐藏「深入原理」）", "Intuition only (hide Mechanics)")}</label>
-
-    <div class="section">${SH("🧠", "直觉解释", "Intuition")}${md(data.intuition)}</div>
-    ${data.mechanics ? `<div class="section deep" id="mech">${SH("⚙️", "深入原理", "Mechanics")}${md(data.mechanics)}</div>` : ""}
-    ${data.demo ? `<div class="section">${SH("🔬", "动手玩一玩", "Try It Yourself")}<div id="demo-mount"></div></div>` : ""}
-    ${data.analogy ? `<div class="section">${SH("🪞", "类比", "Analogy")}${md(data.analogy)}</div>` : ""}
-    ${(data.misconceptions || []).length ? `<div class="section">${SH("⚠️", "常见误解", "Common Misconceptions")}<ul class="miscon">${data.misconceptions.map((m) => `<li>${inline(m)}</li>`).join("")}</ul></div>` : ""}
-    ${(data.quiz || []).length ? `<div class="section">${SH("✅", "自测", "Quick Quiz")}<div id="quiz"></div></div>` : ""}
-    ${(data.further || []).length ? `<div class="section">${SH("📚", "延伸阅读", "Further Reading")}<div class="further">${data.further.map((f) => `<a href="${f.url}" target="_blank" rel="noopener">${f.label} ↗</a>`).join("")}</div></div>` : ""}
-
-    <button class="complete ${done ? "done" : ""}" id="complete">${done ? t("✓ 已完成本节", "✓ Completed") : t("标记为已完成", "Mark as complete")}</button>
-    ${navHTML}
-      </div>
+      ${sidebarHTML(id, hit.stage)}
+      <article class="lesson-main">
+        <nav class="breadcrumb" aria-label="${t("位置", "Location")}"><a data-back>${t("路线图", "Roadmap")}</a><span class="sep">/</span><span class="tierdot" style="background:${tier.color}"></span><span>${escHTML(L(tier, "label").split(" · ")[0])}</span><span class="sep">/</span><span>${t("阶段", "Stage")} ${hit.stage.n} · ${escHTML(L(hit.stage, "title"))}</span></nav>
+        <h1 class="lsn-title"><span class="lsn-num">${hit.num}</span>${escHTML(title)}</h1>
+        <div class="lsn-meta">
+          <span class="meta-pill">${stars(hit.lesson.difficulty)}${diffLabel(hit.lesson.difficulty)}</span>
+          <span class="meta-pill">≈ ${mins} ${t("分钟阅读", "min read")}</span>
+          ${done ? `<span class="meta-pill" style="color:var(--green)">✓ ${t("已完成", "Completed")}</span>` : ""}
+        </div>
+        ${data.fellBack ? `<div class="fallback-note">(English version of this lesson is being written; showing Chinese for now.)</div>` : ""}
+        ${prereqs.length ? `<div class="lsn-tag">${t("前置：", "Builds on: ")}${prereqs.map((p) => xrefLink(p)).join(" ")}</div>` : ""}
+        <div class="oneliner">${inline((S.hook || "").replace(/\n/g, " "))}</div>
+        ${S.bridge ? `<div class="bridge"><div class="bridge-h">${t("我们走到哪了", "Where we are")}</div>${md(S.bridge)}</div>` : ""}
+        ${S.mechanics ? `<div class="view-switch"><div class="seg" role="group" aria-label="${t("阅读深度", "Reading depth")}"><button data-depth="full" class="${state.brief ? "" : "on"}">${t("完整版", "Full lesson")}</button><button data-depth="brief" class="${state.brief ? "on" : ""}">${t("只看直觉版", "Intuition only")}</button></div></div>` : ""}
+        ${secHTML}
+        ${nextL ? `<a class="next-card" href="#lesson/${nextL.id}"><div class="next-k">${t("下一课", "Up next")} · ${findLesson(nextL.id).num}</div><div class="next-t">${escHTML(L(nextL, "title"))} →</div>${S.next ? `<div class="next-why">${inline(S.next.replace(/\n/g, " "))}</div>` : ""}</a>` : ""}
+        <button class="complete ${done ? "done" : ""}" id="complete">${done ? t("✓ 已完成本节", "✓ Completed") : t("标记为已完成", "Mark as complete")}</button>
+        <div class="lsn-nav">
+          ${prevL ? `<button class="navbtn" data-go="${prevL.id}">← ${t("上一课", "Previous")} · ${findLesson(prevL.id).num}<span>${escHTML(L(prevL, "title"))}</span></button>` : "<span></span>"}
+          ${nextL ? `<button class="navbtn navbtn-next" data-go="${nextL.id}">${t("下一课", "Next")} · ${findLesson(nextL.id).num} →<span>${escHTML(L(nextL, "title"))}</span></button>` : "<span></span>"}
+        </div>
+        <div class="kbd-hint">${t("键盘", "Keyboard")}：<kbd>←</kbd> <kbd>→</kbd> ${t("切换上一课 / 下一课", "previous / next lesson")}</div>
+      </article>
+      <nav class="toc" aria-label="${t("本页目录", "On this page")}"></nav>
     </div>
-  `;
+    <div class="scrim" data-sbclose></div>`;
 
   app.querySelectorAll("[data-back]").forEach((b) => b.addEventListener("click", () => { location.hash = ""; }));
-  app.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => { location.hash = `lesson/${b.dataset.go}`; }));
-  app.querySelector("[data-sbtoggle]")?.addEventListener("click", () => {
-    app.querySelector(".lesson-layout")?.classList.toggle("sb-open");
+  app.querySelectorAll("[data-go]").forEach((b) => {
+    const go = () => { location.hash = `lesson/${b.dataset.go}`; };
+    b.addEventListener("click", go); b.addEventListener("keydown", (e) => { if (e.key === "Enter") go(); });
   });
-  app.querySelector(".sb-lesson.active")?.scrollIntoView({ block: "nearest" });
-
-  const depth = app.querySelector("#depth");
-  const mech = app.querySelector("#mech");
-  if (depth && mech) depth.addEventListener("change", () => { mech.hidden = depth.checked; });
-
-  if (data.demo) {
-    const mountEl = app.querySelector("#demo-mount");
-    try {
-      const demo = (await import(`./demos/${data.demo}.js?v=${V}`)).default;
-      demo(mountEl, lang());
-    } catch (e) {
-      mountEl.innerHTML = `<div class="demo-warn">${t("演示加载失败", "Demo failed to load")}：${esc(String(e))}</div>`;
-    }
-  }
-
-  if ((data.quiz || []).length) renderQuiz(app.querySelector("#quiz"), data.quiz);
+  app.querySelectorAll("[data-sbclose]").forEach((b) => b.addEventListener("click", () => document.body.classList.remove("sb-open")));
+  const active = app.querySelector(".sb-lesson.active");
+  if (active) { const sb = app.querySelector(".sidebar"); sb.scrollTop = active.offsetTop - sb.clientHeight / 3; }
 
   const mainEl = app.querySelector(".lesson-main");
-  if (mainEl) decorateLesson(mainEl, id, lang());
+  const mech = app.querySelector("[data-mech]");
+  const applyDepth = () => { if (mech) mech.hidden = !!state.brief; buildToc(); };
+  app.querySelectorAll("[data-depth]").forEach((b) => b.addEventListener("click", () => {
+    state.brief = b.dataset.depth === "brief"; saveState(state);
+    app.querySelectorAll("[data-depth]").forEach((x) => x.classList.toggle("on", x === b));
+    applyDepth();
+  }));
+
+  try { decorateGlossary(mainEl); wireGlossFlip(mainEl); decorateFigures(mainEl); } catch { /* decoration never blocks reading */ }
+  for (const el of app.querySelectorAll(".demo-host[data-demo], .inline-demo[data-demo]")) mountDemo(el, el.dataset.demo);
+  if (quiz.length) renderQuiz(app.querySelector("#quiz"), quiz, id);
+
+  function buildToc() {
+    const toc = app.querySelector(".toc");
+    if (!toc) return;
+    const items = [];
+    secs.forEach((s) => {
+      if (s.key === "mechanics" && state.brief) return;
+      items.push(`<li><a href="#s-${s.key}" data-sec="s-${s.key}">${s.label}</a></li>`);
+      if (s.key === "mechanics") mainEl.querySelectorAll("#s-mechanics .subhead.lvl3").forEach((h) => {
+        const c = h.cloneNode(true); c.querySelectorAll(".gloss-card,.katex-mathml").forEach((x) => x.remove());
+        const full = c.textContent.trim(), txt = full.replace(/^[①②③④⑤⑥⑦⑧\s]+/, "");
+        items.push(`<li class="sub"><a href="#${h.id}" data-sec="${h.id}">${escHTML(full.charAt(0))} ${escHTML(txt.length > 42 ? txt.slice(0, 40) + "…" : txt)}</a></li>`);
+      });
+    });
+    toc.innerHTML = `<div class="label">${t("本页目录", "On this page")}</div><ol>${items.join("")}</ol><div class="toc-actions"><button data-totop>↑ ${t("回到顶部", "Back to top")}</button></div>`;
+    toc.querySelectorAll("a[data-sec]").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); document.getElementById(a.dataset.sec)?.scrollIntoView({ behavior: "smooth", block: "start" }); }));
+    toc.querySelector("[data-totop]").addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+  }
+  applyDepth();
+  const spy = new IntersectionObserver((ents) => { ents.forEach((en) => { if (en.isIntersecting) app.querySelectorAll(".toc a").forEach((a) => a.classList.toggle("on", a.dataset.sec === en.target.id)); }); }, { rootMargin: "-18% 0px -72% 0px" });
+  mainEl.querySelectorAll(".section, #s-mechanics .subhead.lvl3").forEach((el) => spy.observe(el));
+  onCleanup(() => spy.disconnect());
+  setReadbar(mainEl);
+
+  const onKey = (e) => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    const tag = (e.target.tagName || "").toLowerCase();
+    if (["input", "textarea", "select", "button"].includes(tag) || e.target.isContentEditable) return;
+    if (e.key === "ArrowLeft" && prevL) location.hash = `lesson/${prevL.id}`;
+    if (e.key === "ArrowRight" && nextL) location.hash = `lesson/${nextL.id}`;
+    if (e.key === "Escape") document.body.classList.remove("sb-open");
+  };
+  document.addEventListener("keydown", onKey);
+  onCleanup(() => document.removeEventListener("keydown", onKey));
 
   const btn = app.querySelector("#complete");
   btn.addEventListener("click", () => {
-    if (state.done[id]) return;
-    state.done[id] = true;
-    saveState(state);
-    btn.classList.add("done");
-    btn.textContent = t("✓ 已完成本节", "✓ Completed");
-    if (readyLessons().every((l) => state.done[l.id])) {
-      btn.insertAdjacentHTML("afterend", `<div class="done-banner" style="margin-top:14px">${t("🎉 你已读完整条「奥派之路」！回到路线图，看看你点亮的全程。", "🎉 You've finished the entire Droplet Labs · Austrian Path! Head back to the roadmap to see your whole journey lit up.")}</div>`);
-    }
-    const nb = app.querySelector(".navbtn-next");
-    if (nb) nb.classList.add("pulse");
+    state.done[id] = !state.done[id]; saveState(state);
+    btn.classList.toggle("done", !!state.done[id]);
+    btn.textContent = state.done[id] ? t("✓ 已完成本节", "✓ Completed") : t("标记为已完成", "Mark as complete");
+    const y = window.scrollY; renderChrome({ kind: "lesson", title }); window.scrollTo(0, y);
+    const sb = app.querySelector(".sb-lesson.active .sb-check"); if (sb) sb.textContent = state.done[id] ? "✓" : "";
+    if (state.done[id]) app.querySelector(".next-card")?.classList.add("pulse");
   });
 }
 
-function renderQuiz(root, quiz) {
-  root.innerHTML = quiz.map((q, qi) => `
-    <div class="quiz-q">
-      <div class="quiz-stem">${qi + 1}. ${inline(q.q)}</div>
-      <div class="quiz-opts">
-        ${q.options.map((o, oi) => `<button class="quiz-opt" data-q="${qi}" data-o="${oi}">${inline(o)}</button>`).join("")}
-      </div>
-      <div class="quiz-explain" hidden data-explain="${qi}">${inline(q.explain || "")}</div>
-    </div>`).join("");
-
-  root.querySelectorAll(".quiz-opt").forEach((btn) =>
-    btn.addEventListener("click", () => {
-      const qi = +btn.dataset.q, oi = +btn.dataset.o;
-      const q = quiz[qi];
-      root.querySelectorAll(`.quiz-opt[data-q="${qi}"]`).forEach((b, i) => {
-        b.disabled = true;
-        if (i === q.answer) b.classList.add("correct");
-      });
-      if (oi !== q.answer) btn.classList.add("wrong");
-      root.querySelector(`[data-explain="${qi}"]`).hidden = false;
-    }));
+async function mountDemo(el, name) {
+  el.classList.add("demo-host");
+  try {
+    const mod = await import(`./demos/${name}.js?v=${V}`);
+    await mod.default(el, lang());
+  } catch (e) {
+    el.innerHTML = `<div class="demo-warn">${t("演示加载失败", "Demo failed to load")}（${escHTML(name)}）：${escHTML(String((e && e.message) || e))}</div>`;
+    console.error(e);
+  }
 }
 
-/* ---------------- 启动 ---------------- */
-renderLangToggle();
+// deterministic shuffle: answer positions vary but stay stable across visits
+function seededOrder(n, seedStr) {
+  let h = 2166136261;
+  for (const c of seedStr) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
+  const idx = [...Array(n).keys()];
+  for (let i = n - 1; i > 0; i--) { h = Math.imul(h ^ (h >>> 13), 1274126177); const j = (h >>> 0) % (i + 1); [idx[i], idx[j]] = [idx[j], idx[i]]; }
+  return idx;
+}
+function renderQuiz(root, quiz, id) {
+  const answered = new Map();
+  root.innerHTML = quiz.map((q, qi) => {
+    const order = seededOrder(q.options.length, id + ":" + qi);
+    return `<div class="quiz-q">
+      <div class="quiz-stem"><span class="qn">${qi + 1}</span><span>${inline(q.q)}</span></div>
+      <div class="quiz-opts">${order.map((oi) => `<button class="quiz-opt" data-q="${qi}" data-o="${oi}"><span>${inline(q.options[oi])}</span></button>`).join("")}</div>
+      <div class="quiz-explain" hidden data-explain="${qi}"></div>
+    </div>`;
+  }).join("") + `<div class="quiz-score" hidden></div>`;
+  root.querySelectorAll(".quiz-opt").forEach((btn) => btn.addEventListener("click", () => {
+    const qi = +btn.dataset.q, oi = +btn.dataset.o, q = quiz[qi];
+    if (answered.has(qi)) return;
+    answered.set(qi, oi === q.answer);
+    root.querySelectorAll(`.quiz-opt[data-q="${qi}"]`).forEach((b) => { b.disabled = true; if (+b.dataset.o === q.answer) b.classList.add("correct"); });
+    if (oi !== q.answer) btn.classList.add("wrong");
+    const ex = root.querySelector(`[data-explain="${qi}"]`);
+    ex.innerHTML = `<b>${oi === q.answer ? t("✓ 答对了。", "✓ Correct.") : t("✗ 再想想。", "✗ Not quite.")}</b> ${inline(q.explain || "")}`;
+    ex.hidden = false;
+    if (answered.size === quiz.length) {
+      const score = [...answered.values()].filter(Boolean).length;
+      state.quiz[id] = Math.max(state.quiz[id] || 0, score); saveState(state);
+      const sc = root.querySelector(".quiz-score");
+      sc.hidden = false;
+      sc.innerHTML = score === quiz.length
+        ? t(`全对（${score}/${quiz.length}）！可以放心进入下一课。`, `Perfect (${score}/${quiz.length})! You're ready for the next lesson.`)
+        : t(`得分 ${score}/${quiz.length}。看看解析，必要时回到上面对应的小节再读一遍。`, `Score ${score}/${quiz.length}. Read the explanations and revisit the matching section above if needed.`);
+    }
+  }));
+}
+
+/* ---------------- boot ---------------- */
 render();
